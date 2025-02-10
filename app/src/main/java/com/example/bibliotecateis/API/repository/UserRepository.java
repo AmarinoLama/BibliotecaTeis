@@ -1,8 +1,6 @@
 package com.example.bibliotecateis.API.repository;
 
 import android.util.Log;
-
-
 import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.retrofit.ApiClient;
 import com.example.bibliotecateis.API.retrofit.ApiService;
@@ -20,7 +18,7 @@ public class UserRepository {
         apiService = ApiClient.getClient().create(ApiService.class);
     }
 
-    public void getUsers(final com.example.appbiblioteis.API.repository.BookRepository.ApiCallback<List<User>> callback) {
+    public void getUsers(final BookRepository.ApiCallback<List<User>> callback) {
         apiService.getUsers().enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
@@ -35,7 +33,7 @@ public class UserRepository {
         });
     }
 
-    public void getUserById(int id, final com.example.appbiblioteis.API.repository.BookRepository.ApiCallback<User> callback) {
+    public void getUserById(int id, final BookRepository.ApiCallback<User> callback) {
         apiService.getUser(id).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -50,7 +48,7 @@ public class UserRepository {
         });
     }
 
-    public void createUser(User user, final com.example.appbiblioteis.API.repository.BookRepository.ApiCallback<Boolean> callback) {
+    public void createUser(User user, final BookRepository.ApiCallback<Boolean> callback) {
         apiService.createUser(user).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -65,7 +63,7 @@ public class UserRepository {
         });
     }
 
-    public void updateUser(int id, User user, final com.example.appbiblioteis.API.repository.BookRepository.ApiCallback<Boolean> callback) {
+    public void updateUser(int id, User user, final BookRepository.ApiCallback<Boolean> callback) {
         apiService.updateUser(id, user).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -80,7 +78,7 @@ public class UserRepository {
         });
     }
 
-    public void deleteUser(int id, final com.example.appbiblioteis.API.repository.BookRepository.ApiCallback<Boolean> callback) {
+    public void deleteUser(int id, final BookRepository.ApiCallback<Boolean> callback) {
         apiService.deleteUser(id).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
