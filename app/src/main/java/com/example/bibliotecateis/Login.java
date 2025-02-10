@@ -58,10 +58,8 @@ public class Login extends AppCompatActivity {
             public void onSuccess(List<User> result) {
                 for(User user : result) {
                     if(user.getEmail().equals(usuario) && user.getPasswordHash().equals(password)) {
-                        Intent intent = new Intent(Login.this, MainActivity.class);
-                        startActivity(intent);
+                        Toast.makeText(Login.this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
                         finish();
-                        return;
                     } else {
                         Toast.makeText(Login.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
                     }
