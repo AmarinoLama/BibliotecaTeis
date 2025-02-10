@@ -1,13 +1,10 @@
-package com.example.appbiblioteis.API.repository;
+package com.example.bibliotecateis.API.repository;
 
 import android.util.Log;
-
-import com.example.appbiblioteis.API.models.BookLending;
-import com.example.appbiblioteis.API.retrofit.ApiClient;
-import com.example.appbiblioteis.API.retrofit.ApiService;
-
+import com.example.bibliotecateis.API.models.BookLending;
+import com.example.bibliotecateis.API.retrofit.ApiService;
+import com.example.bibliotecateis.API.retrofit.ApiClient;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

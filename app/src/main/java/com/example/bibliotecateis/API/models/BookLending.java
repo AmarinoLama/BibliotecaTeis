@@ -1,5 +1,4 @@
-package com.example.appbiblioteis.API.models;
-
+package com.example.bibliotecateis.API.models;
 public class BookLending {
     private int id;
     private int bookId;

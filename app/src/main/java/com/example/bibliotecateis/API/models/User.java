@@ -1,4 +1,4 @@
-package com.example.appbiblioteis.API.models;
+package com.example.bibliotecateis.API.models;
 
 import java.util.List;
 

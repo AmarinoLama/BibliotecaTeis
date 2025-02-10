@@ -1,8 +1,10 @@
-package com.example.appbiblioteis.API.retrofit;
+package com.example.bibliotecateis.API.retrofit;
 
-import com.example.appbiblioteis.API.models.Book;
-import com.example.appbiblioteis.API.models.BookLending;
-import com.example.appbiblioteis.API.models.User;
+import com.example.bibliotecateis.API.models.BookLending;
+import com.example.bibliotecateis.API.models.User;
+
+
+import com.example.bibliotecateis.API.models.Book;
 
 import java.util.List;
 
