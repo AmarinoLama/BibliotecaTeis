@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookRepository;
@@ -23,6 +24,7 @@ public class Login extends AppCompatActivity {
     private Button btnLogin;
     private EditText etContrasena, etUsuario;
     private UserRepository userRepository;
+    UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +60,10 @@ public class Login extends AppCompatActivity {
             public void onSuccess(List<User> result) {
                 for(User user : result) {
                     if(user.getEmail().equals(usuario) && user.getPasswordHash().equals(password)) {
+                        userViewModel = new ViewModelProvider(Login.this).get(UserViewModel.class);
                         Toast.makeText(Login.this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
                         finish();
+
                     } else {
                         Toast.makeText(Login.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
                     }
