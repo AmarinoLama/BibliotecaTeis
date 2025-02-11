@@ -61,6 +61,7 @@ public class Login extends AppCompatActivity {
                 for(User user : result) {
                     if(user.getEmail().equals(usuario) && user.getPasswordHash().equals(password)) {
                         userViewModel = new ViewModelProvider(Login.this).get(UserViewModel.class);
+                        userViewModel.actualizarUser(user);
                         Toast.makeText(Login.this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
                         finish();
 
