@@ -13,9 +13,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class LibroInformacion extends AppCompatActivity {
 
-    private TextView tvTitulo, tvIsbn, tvAutor, tvDescripcion, tvLibrosDisponibles, tvProximoDisponible, tvLibrosExistentes;
+    private TextView tvTitulo, tvIsbn, tvAutor, tvLibrosDisponibles, tvProximoDisponible, tvLibrosExistentes;
     private ImageView ivPortada;
-    private Button btnReservar, btnDevolver;
+    private Button btnReservar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,18 +29,20 @@ public class LibroInformacion extends AppCompatActivity {
         });
 
         inicializar();
+
+        btnReservar.setOnClickListener(v -> {
+            // Reservar libro
+        });
     }
 
     private void inicializar() {
         tvTitulo = findViewById(R.id.tvTitulo);
         tvIsbn = findViewById(R.id.tvIsbn);
         tvAutor = findViewById(R.id.tvAutor);
-        tvDescripcion = findViewById(R.id.tvDescripcion);
         tvLibrosDisponibles = findViewById(R.id.tvLibrosDisponibles);
         tvProximoDisponible = findViewById(R.id.tvProximoDisponible);
         tvLibrosExistentes = findViewById(R.id.tvLibrosExistentes);
         ivPortada = findViewById(R.id.ivPortada);
-        btnDevolver = findViewById(R.id.btnDevolver);
         btnReservar = findViewById(R.id.btnReservar);
     }
 }
