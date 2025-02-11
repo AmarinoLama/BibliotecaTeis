@@ -1,0 +1,115 @@
+package com.example.bibliotecateis;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.bibliotecateis.API.models.Book;
+import com.example.bibliotecateis.API.models.User;
+import com.example.bibliotecateis.API.repository.BookRepository;
+import com.example.bibliotecateis.API.repository.UserRepository;
+
+import java.util.List;
+
+public class listadoLibros extends AppCompatActivity {
+
+    private BookRepository bookRepository;
+    private RecyclerView recyclerViewLibros;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_listado_biblioteca);
+        recyclerViewLibros = findViewById(R.id.recyclerViewLibros);
+    }
+
+    public void cargarBooks() {
+        bookRepository = new BookRepository();
+        bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
+            @Override
+            public void onSuccess(List<Book> result) {
+
+                catgarListViewBooks(resoult);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(listadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void cargarAdapter(List<Book> books) {
+        recyclerViewLibros.setAdapter(new RecyclerView.Adapter() {
+
+            class MyViewHolder extends RecyclerView.ViewHolder {
+                ImageView img1;
+                TextView txt1;
+                TextView txt2;
+                Button btn1;
+
+                public MyViewHolder(@NonNull View itemView) {
+                    super(itemView);
+                    btn1 = itemView.findViewById(R.id.btn1);
+                    img1 = itemView.findViewById(R.id.img1);
+                    txt1 = itemView.findViewById(R.id.txt1);
+                    txt2 = itemView.findViewById(R.id.txt2);
+                }
+
+                public ImageView getImg1() {
+                    return img1;
+                }
+
+                public TextView getTxt1() {
+                    return txt1;
+                }
+
+                public Button getBtn1() {
+                    return btn1;
+                }
+
+                public TextView getTxt2() {
+                    return txt2;
+                }
+            }
+
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout., parent, false);
+                return new MyViewHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                MyViewHolder myvh = (MyViewHolder) holder;
+                Book book = books.get(position);
+                myvh.getTxt1().setText(book.getTitle());
+                myvh.getTxt2().setText(book.getAuthor());
+
+                myvh.getBtn1().setOnClickListener((view) -> {
+                });
+                String urlImagen = book.getBookPicture();
+                if (urlImagen != null && !urlImagen.isEmpty()) {
+//                    myvh.getImg1().setImageResource(book.getBookPicture());
+                }
+            }
+
+            @Override
+            public int getItemCount() {
+                return books.size();
+            }
+        });
+    }
+}

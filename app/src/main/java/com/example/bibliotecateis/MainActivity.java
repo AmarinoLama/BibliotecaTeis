@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        abrirLogin();
+        //abrirLogin();
 
     }
 
@@ -29,4 +29,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, Login.class);
         startActivity(intent);
     }
+
+
 }
