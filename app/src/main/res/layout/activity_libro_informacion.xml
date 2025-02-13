@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="#B187B1">
+    android:background="@color/text_highlight">
 
     <ImageView
         android:id="@+id/ivPortada"

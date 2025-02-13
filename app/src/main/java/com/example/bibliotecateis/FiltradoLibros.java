@@ -1,8 +1,11 @@
 package com.example.bibliotecateis;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.bibliotecateis.API.models.Book;
+import com.example.bibliotecateis.API.models.BookLending;
+import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookRepository;
 
 import java.util.ArrayList;
@@ -12,79 +15,25 @@ public class FiltradoLibros {
 
     private BookRepository bookRepository = new BookRepository();
 
-    public List<Book> getLibrosDisponibles() {
 
-        List<Book> librosDisponibles = new ArrayList<Book>();
 
-        bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
-            @Override
-            public void onSuccess(List<Book> result) {
-                for (Book book : result) {
-                    if (book.isAvailable()) {
-                        librosDisponibles.add(book);
-                    }
+    public List<Book> buscarPrestadosUsuario(User user){
+        List<Book> prestados = new ArrayList<>();
+        for(BookLending bookLending : user.getBookLendings()){
+            bookRepository.getBookById(bookLending.getBookId(),new BookRepository.ApiCallback<Book>() {
+
+                @Override
+                public void onSuccess(Book result) {
+                    prestados.add(result);
                 }
-            }
 
-            @Override
-            public void onFailure(Throwable t) {
-                System.out.println("Error al obtener los libros" + t);
-                //Toast.makeText(MainActivity.this, "Mensaje de bienvenida", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        return librosDisponibles;
-
-    }
-
-    public List<Book> getLibrosByAutor(String autor) {
-
-        List<Book> librosXAutor = new ArrayList<Book>();
-
-        bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
-            @Override
-            public void onSuccess(List<Book> result) {
-                for (Book book : result) {
-                    if (book.getAuthor() == autor) {
-                        librosXAutor.add(book);
-                    }
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.e("BookRepository", "Error deleting book", t);
                 }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                System.out.println("Error al obtener los libros" + t);
-                //Toast.makeText(MainActivity.this, "Mensaje de bienvenida", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        return librosXAutor;
-
-    }
-
-    public List<Book> getLibrosByTitulo(String titulo) {
-
-        List<Book> librosXTitulo = new ArrayList<Book>();
-
-        bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
-            @Override
-            public void onSuccess(List<Book> result) {
-                for (Book book : result) {
-                    if (book.getTitle() == titulo) {
-                        librosXTitulo.add(book);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                System.out.println("Error al obtener los libros" + t);
-                //Toast.makeText(MainActivity.this, "Mensaje de bienvenida", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        return librosXTitulo;
-
+            });
+        }
+        return prestados;
     }
 
 }
