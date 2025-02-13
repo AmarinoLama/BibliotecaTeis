@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,24 +16,58 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bibliotecateis.API.models.Book;
+import com.example.bibliotecateis.API.models.BookLending;
 import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class listadoLibros extends AppCompatActivity {
 
     private BookRepository bookRepository;
     private RecyclerView recyclerViewLibros;
+    private Button btnBuscarAutor, btnBuscarTitulo;
+    private EditText etBuscar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listado_biblioteca);
+        btnBuscarAutor = findViewById(R.id.btnFiltrarAutor);
+        btnBuscarTitulo = findViewById(R.id.btnFiltrarTitulo);
+        etBuscar = findViewById(R.id.etBuscar);
+
         recyclerViewLibros = findViewById(R.id.recyclerViewLibros);
         recyclerViewLibros.setLayoutManager(new LinearLayoutManager((this)));
         cargarBooks();
+
+        btnBuscarAutor.setOnClickListener((view) -> {
+            bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
+                @Override
+                public void onSuccess(List<Book> result) {
+                    buscarAutor(etBuscar.getText().toString(), result);
+                }
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(listadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        btnBuscarTitulo.setOnClickListener((view) -> {
+            bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
+                @Override
+                public void onSuccess(List<Book> result) {
+                    buscarTitulo(etBuscar.getText().toString(), result);
+                }
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(listadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
     public void cargarBooks() {
@@ -118,4 +153,19 @@ public class listadoLibros extends AppCompatActivity {
             }
         });
     }
+
+
+    public void buscarAutor(String autor, List<Book> books){
+        cargarAdapter(books.stream().filter(book -> book.getAuthor().equals(autor)).toList());
+    }
+
+    public void buscarTitulo(String titulo, List<Book> books){
+        cargarAdapter(books.stream().filter(book -> book.getTitle().equals(titulo)).toList());
+    }
+
+    public void buscarPrestado(List<Book> books){
+        cargarAdapter(books.stream().filter(book -> !book.isAvailable()).toList());
+    }
+
+
 }
