@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bibliotecateis.API.models.Book;
@@ -30,6 +31,8 @@ public class listadoLibros extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listado_biblioteca);
         recyclerViewLibros = findViewById(R.id.recyclerViewLibros);
+        recyclerViewLibros.setLayoutManager(new LinearLayoutManager((this)));
+        cargarBooks();
     }
 
     public void cargarBooks() {
@@ -38,7 +41,7 @@ public class listadoLibros extends AppCompatActivity {
             @Override
             public void onSuccess(List<Book> result) {
 
-                catgarListViewBooks(resoult);
+                cargarAdapter(result);
             }
 
             @Override
@@ -87,7 +90,7 @@ public class listadoLibros extends AppCompatActivity {
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout., parent, false);
+                        .inflate(R.layout.fragment_tarjeta_book, parent, false);
                 return new MyViewHolder(view);
             }
 
@@ -99,10 +102,13 @@ public class listadoLibros extends AppCompatActivity {
                 myvh.getTxt2().setText(book.getAuthor());
 
                 myvh.getBtn1().setOnClickListener((view) -> {
+                    // lo de aman
                 });
                 String urlImagen = book.getBookPicture();
                 if (urlImagen != null && !urlImagen.isEmpty()) {
 //                    myvh.getImg1().setImageResource(book.getBookPicture());
+                } else {
+                    myvh.getImg1().setImageResource(R.drawable.portadalibrodefault);
                 }
             }
 
