@@ -66,6 +66,7 @@ public class Login extends AppCompatActivity {
                         finish();
 
                     } else {
+                        /* entra 4 veces aquí */
                         Toast.makeText(Login.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
                     }
                 }
