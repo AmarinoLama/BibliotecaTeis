@@ -132,4 +132,11 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btnVolver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:text="Volver"/>
+
 </LinearLayout>

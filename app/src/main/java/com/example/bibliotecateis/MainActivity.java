@@ -2,6 +2,7 @@ package com.example.bibliotecateis;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -9,20 +10,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent i = new Intent(MainActivity.this, listadoLibros.class);
-        startActivity(i);
-//        setContentView(R.layout.activity_login);
 
+        //abrirLogin();
 
-        abrirLogin();
+        abrirListadoLibros();
 
-       /*Intent intent = new Intent(MainActivity.this, LibroInformacion.class);
-       startActivity(intent);*/
+        //abrirLibroInformacion();
 
     }
 
     private void abrirLogin() {
         Intent intent = new Intent(MainActivity.this, Login.class);
+        startActivity(intent);
+    }
+
+    private void abrirListadoLibros() {
+        Intent intent = new Intent(MainActivity.this, listadoLibros.class);
+        startActivity(intent);
+    }
+
+    private void abrirLibroInformacion() {
+        Intent intent = new Intent(MainActivity.this, LibroInformacion.class);
         startActivity(intent);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.bibliotecateis;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -130,7 +131,9 @@ public class listadoLibros extends AppCompatActivity {
                 myvh.getTxt2().setText(book.getAuthor());
 
                 myvh.getBtn1().setOnClickListener((view) -> {
-                    // lo de aman
+                    Intent intent = new Intent(listadoLibros.this, LibroInformacion.class);
+                    intent.putExtra("bookId", book.getId());
+                    startActivity(intent);
                 });
                 String urlImagen = book.getBookPicture();
                 if (urlImagen != null && !urlImagen.isEmpty()) {
