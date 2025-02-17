@@ -41,6 +41,36 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/portadalibrodefault" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Existencias del libro:"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="110dp"/>
+
+    <TextView
+        android:id="@+id/txt_existencias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="null"
+        tools:layout_editor_absoluteX="136dp"
+        tools:layout_editor_absoluteY="110dp" />
+
+    <TextView
+        android:id="@+id/txt_disponibles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Existencias disponibles:"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="135dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="null"
+        tools:layout_editor_absoluteX="158dp"
+        tools:layout_editor_absoluteY="135dp" />
+
     <View
         android:id="@+id/divider"
         android:layout_width="409dp"

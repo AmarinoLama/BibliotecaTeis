@@ -85,8 +85,7 @@ public class listadoLibros extends AppCompatActivity {
 
             class MyViewHolder extends RecyclerView.ViewHolder {
                 ImageView img1;
-                TextView txt1;
-                TextView txt2;
+                TextView txt1, txt2, txt_disponibles, txt_existencias;
                 Button btn1;
 
                 public MyViewHolder(@NonNull View itemView) {
@@ -95,6 +94,8 @@ public class listadoLibros extends AppCompatActivity {
                     img1 = itemView.findViewById(R.id.img1);
                     txt1 = itemView.findViewById(R.id.txt1);
                     txt2 = itemView.findViewById(R.id.txt2);
+                    txt_disponibles = itemView.findViewById(R.id.txt_disponibles);
+                    txt_existencias = itemView.findViewById(R.id.txt_existencias);
                 }
 
                 public ImageView getImg1() {
@@ -128,6 +129,8 @@ public class listadoLibros extends AppCompatActivity {
                 Book book = books.get(position);
                 myvh.getTxt1().setText(book.getTitle());
                 myvh.getTxt2().setText(book.getAuthor());
+
+                Helpers.obtenerExistencias(book, myvh.txt_existencias, myvh.txt_disponibles);
 
                 myvh.getBtn1().setOnClickListener((view) -> {
                     Intent intent = new Intent(listadoLibros.this, LibroInformacion.class);
