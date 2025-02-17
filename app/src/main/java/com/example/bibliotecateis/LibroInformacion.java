@@ -1,34 +1,33 @@
 package com.example.bibliotecateis;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.example.bibliotecateis.API.models.Book;
-import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookRepository;
-import com.example.bibliotecateis.API.repository.UserRepository;
+import com.example.bibliotecateis.API.repository.ImageRepository;
 import com.journeyapps.barcodescanner.CaptureActivity;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-import java.util.List;
-
 public class LibroInformacion extends AppCompatActivity {
 
+
+    public static String BOOK_ID_EXTRA = "bookId";
     private TextView tvTitulo, tvIsbn, tvAutor, tvLibrosDisponibles, tvProximoDisponible, tvLibrosExistentes;
     private ImageView ivPortada;
-    private Button btnPrestar, btnDevolver;
+    private Button btnPrestar, btnDevolver, btnVolver;
 
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
 
@@ -47,11 +46,16 @@ public class LibroInformacion extends AppCompatActivity {
 
         // Cargar información del libro
         Intent intent = getIntent();
-        Integer idLibro = intent.getIntExtra("bookid", 0);
+        Integer idLibro = intent.getIntExtra(BOOK_ID_EXTRA, 0);
+
         cargarInfoLibro(idLibro);
 
         btnDevolver.setOnClickListener(v -> {
             // Devolver libro
+        });
+
+        btnVolver.setOnClickListener(v -> {
+            finish();
         });
 
         barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
@@ -84,6 +88,7 @@ public class LibroInformacion extends AppCompatActivity {
         ivPortada = findViewById(R.id.ivPortada);
         btnPrestar = findViewById(R.id.btnPrestar);
         btnDevolver = findViewById(R.id.btnDevolver);
+        btnVolver = findViewById(R.id.btnVolver);
     }
 
     private void cargarInfoLibro(Integer id) {
@@ -94,15 +99,31 @@ public class LibroInformacion extends AppCompatActivity {
                 tvTitulo.setText(result.getTitle());
                 tvIsbn.setText(result.getIsbn());
                 tvAutor.setText(result.getAuthor());
-                //tvLibrosDisponibles.setText(result.getLibrosDisponibles().toString());
-                //tvProximoDisponible.setText(result.getProximoDisponible());
-                //tvLibrosExistentes.setText(result.getLibrosExistentes().toString());
-                // ivPortada.setImageURI(result.getPortada());
+                if (!result.getBookPicture().isEmpty()) {
+                    cargarImagen(result.getBookPicture());
+                }
             }
 
             @Override
             public void onFailure(Throwable t) {
                 Toast.makeText(LibroInformacion.this, "Error al buscar el libro", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void cargarImagen(String bookPicture) {
+        ImageRepository imageRepository = new ImageRepository();
+        imageRepository.getImage(bookPicture, new BookRepository.ApiCallback<byte[]>() {
+            @Override
+            public void onSuccess(byte[] result) {
+                if (result != null && result.length > 0) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
+                    ivPortada.setImageBitmap(bitmap);
+                }
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(LibroInformacion.this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show();
             }
         });
     }

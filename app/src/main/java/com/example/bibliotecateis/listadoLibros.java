@@ -132,12 +132,12 @@ public class listadoLibros extends AppCompatActivity {
 
                 myvh.getBtn1().setOnClickListener((view) -> {
                     Intent intent = new Intent(listadoLibros.this, LibroInformacion.class);
-                    intent.putExtra("bookId", book.getId());
+                    intent.putExtra(LibroInformacion.BOOK_ID_EXTRA, book.getId());
                     startActivity(intent);
                 });
                 String urlImagen = book.getBookPicture();
                 if (urlImagen != null && !urlImagen.isEmpty()) {
-//                    myvh.getImg1().setImageResource(book.getBookPicture());
+                    //myvh.getImg1().setImageResource(book.getBookPicture());
                 } else {
                     myvh.getImg1().setImageResource(R.drawable.portada_libro_default);
                 }

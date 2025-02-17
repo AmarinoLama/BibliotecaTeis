@@ -3,7 +3,7 @@ package com.example.bibliotecateis.API.repository;
 import com.example.bibliotecateis.API.retrofit.ApiClient;
 import com.example.bibliotecateis.API.retrofit.ApiService;
 
-import java.util.List;
+import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -18,12 +18,16 @@ public class ImageRepository {
         apiService = ApiClient.getClient().create(ApiService.class);
     }
 
-    public void getImage(String imageName, final BookRepository.ApiCallback<ResponseBody> callback){
+    public void getImage(String imageName, final BookRepository.ApiCallback<byte[]> callback){
         apiService.getImage(imageName).enqueue(new Callback<ResponseBody>() {
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                callback.onSuccess(response.body());
+                try {
+                    callback.onSuccess(response.body().bytes());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             @Override

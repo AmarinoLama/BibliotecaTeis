@@ -10,8 +10,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class BookLendingRepository {
-    private ApiService apiService;
 
+    private ApiService apiService;
 
     public BookLendingRepository() {
         apiService = ApiClient.getClient().create(ApiService.class);
@@ -62,4 +62,3 @@ public class BookLendingRepository {
         });
     }
 }
-
