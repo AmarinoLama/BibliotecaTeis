@@ -69,7 +69,6 @@ public class listadoLibros extends AppCompatActivity {
         bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
             @Override
             public void onSuccess(List<Book> result) {
-
                 cargarAdapter(result);
             }
 
@@ -137,7 +136,7 @@ public class listadoLibros extends AppCompatActivity {
                 });
                 String urlImagen = book.getBookPicture();
                 if (urlImagen != null && !urlImagen.isEmpty()) {
-                    //myvh.getImg1().setImageResource(book.getBookPicture());
+                    Helpers.cargarImagen(urlImagen, myvh.getImg1());
                 } else {
                     myvh.getImg1().setImageResource(R.drawable.portada_libro_default);
                 }
@@ -150,18 +149,19 @@ public class listadoLibros extends AppCompatActivity {
         });
     }
 
-
-    public void buscarAutor(String autor, List<Book> books){
-        cargarAdapter(books.stream().filter(book -> book.getAuthor().equals(autor)).toList());
+    public void buscarAutor(String autor, List<Book> books) {
+        cargarAdapter(books.stream()
+                .filter(book -> book.getAuthor().toLowerCase().contains(autor.toLowerCase()))
+                .toList());
     }
 
     public void buscarTitulo(String titulo, List<Book> books){
-        cargarAdapter(books.stream().filter(book -> book.getTitle().equals(titulo)).toList());
+        cargarAdapter(books.stream()
+                .filter(book -> book.getTitle().toLowerCase().contains(titulo.toLowerCase()))
+                .toList());
     }
 
     public void buscarPrestado(List<Book> books){
         cargarAdapter(books.stream().filter(book -> !book.isAvailable()).toList());
     }
-
-
 }

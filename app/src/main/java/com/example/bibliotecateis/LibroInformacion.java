@@ -75,6 +75,10 @@ public class LibroInformacion extends AppCompatActivity {
         options.setOrientationLocked(true);
         options.setCaptureActivity(CaptureActivity.class);
 
+        //hacer algo q lea el codigo qr
+
+        //harcodear el código q lee x defecto
+
         barcodeLauncher.launch(options);
     }
 
@@ -100,30 +104,13 @@ public class LibroInformacion extends AppCompatActivity {
                 tvIsbn.setText(result.getIsbn());
                 tvAutor.setText(result.getAuthor());
                 if (!result.getBookPicture().isEmpty()) {
-                    cargarImagen(result.getBookPicture());
+                    Helpers.cargarImagen(result.getBookPicture(), ivPortada);
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
                 Toast.makeText(LibroInformacion.this, "Error al buscar el libro", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void cargarImagen(String bookPicture) {
-        ImageRepository imageRepository = new ImageRepository();
-        imageRepository.getImage(bookPicture, new BookRepository.ApiCallback<byte[]>() {
-            @Override
-            public void onSuccess(byte[] result) {
-                if (result != null && result.length > 0) {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
-                    ivPortada.setImageBitmap(bitmap);
-                }
-            }
-            @Override
-            public void onFailure(Throwable t) {
-                Toast.makeText(LibroInformacion.this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show();
             }
         });
     }
