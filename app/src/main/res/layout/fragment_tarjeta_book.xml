@@ -39,37 +39,39 @@
         android:layout_height="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/portadalibrodefault" />
+        tools:src="@drawable/portada_libro_default" />
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Existencias del libro:"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="110dp"/>
+        app:layout_constraintBottom_toTopOf="@+id/txt_disponibles"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txt_existencias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="null"
-        tools:layout_editor_absoluteX="136dp"
-        tools:layout_editor_absoluteY="110dp" />
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Existencias disponibles:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txt_disponibles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Existencias disponibles:"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="135dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="null"
-        tools:layout_editor_absoluteX="158dp"
-        tools:layout_editor_absoluteY="135dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView" />
 
     <View
         android:id="@+id/divider"
