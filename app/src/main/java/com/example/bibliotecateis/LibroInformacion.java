@@ -106,6 +106,9 @@ public class LibroInformacion extends AppCompatActivity {
                 if (!result.getBookPicture().isEmpty()) {
                     Helpers.cargarImagen(result.getBookPicture(), ivPortada);
                 }
+                Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles);
+                Helpers.getNextDevolucion(result,tvProximoDisponible);
+
             }
 
             @Override

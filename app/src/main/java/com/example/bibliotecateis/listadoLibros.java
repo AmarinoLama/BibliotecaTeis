@@ -64,23 +64,10 @@ public class listadoLibros extends AppCompatActivity {
         });
     }
 
-    public void cargarBooks() {
-        bookRepository = new BookRepository();
-        bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
-            @Override
-            public void onSuccess(List<Book> result) {
-                cargarAdapter(result);
-            }
+    private void cargarAdapter(List<Book> booksSinFiltrar) {
 
-            @Override
-            public void onFailure(Throwable t) {
-                Toast.makeText(listadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+        List<Book> books = Helpers.getLibrosSinRepetir(booksSinFiltrar);
 
-
-    private void cargarAdapter(List<Book> books) {
         recyclerViewLibros.setAdapter(new RecyclerView.Adapter() {
 
             class MyViewHolder extends RecyclerView.ViewHolder {
@@ -148,6 +135,21 @@ public class listadoLibros extends AppCompatActivity {
             @Override
             public int getItemCount() {
                 return books.size();
+            }
+        });
+    }
+
+    public void cargarBooks() {
+        bookRepository = new BookRepository();
+        bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
+            @Override
+            public void onSuccess(List<Book> result) {
+                cargarAdapter(result);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(listadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
             }
         });
     }
