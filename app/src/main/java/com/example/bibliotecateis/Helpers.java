@@ -7,6 +7,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuProvider;
+
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.models.BookLending;
 import com.example.bibliotecateis.API.models.User;
@@ -18,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -159,6 +165,46 @@ public class Helpers {
         });
         return lendingsUser;
     }
+
+
+    public static void cargarToolbar(AppCompatActivity context, Toolbar tb) {
+        // Configura la barra de herramientas (Toolbar) en la actividad proporcionada
+        context.setSupportActionBar(tb);
+
+        // Añade un proveedor de menú a la actividad
+        context.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                // Infla el menú desde el recurso XML 'main_menu'
+                menuInflater.inflate(R.menu.main_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                // Obtiene el ID del elemento del menú seleccionado
+                int id = menuItem.getItemId();
+                // Maneja la selección de los elementos del menú
+                if(id == R.id.btnMenuListadoLibros){
+                    // Muestra un mensaje de "Opción 1" si se selecciona 'btnMenuListadoLibros'
+                    Toast.makeText(context, "Opción 1", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                if(id == R.id.btnMenuLogin){
+                    // Muestra un mensaje de "Opción 2" si se selecciona 'btnMenuLogin'
+                    Toast.makeText(context, "Opción 2", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                if(id == R.id.btnMenuCamara){
+                    // Muestra un mensaje de "Opción 3" si se selecciona 'btnMenuCamara'
+                    Toast.makeText(context, "Opción 3", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                // Devuelve false si no se selecciona ningún elemento conocido
+                return false;
+            }
+        });
+    }
+}
 
     public static boolean userHasBook(User user, String bookIsbn) {
         List<BookLending> lendingsUser = getLendingsUser(user);

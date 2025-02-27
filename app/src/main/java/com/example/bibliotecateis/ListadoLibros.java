@@ -1,5 +1,7 @@
 package com.example.bibliotecateis;
 
+import static com.example.bibliotecateis.Helpers.cargarToolbar;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,12 +22,13 @@ import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import java.util.List;
 
-public class listadoLibros extends AppCompatActivity {
+public class ListadoLibros extends AppCompatActivity {
 
     private BookRepository bookRepository;
     private RecyclerView recyclerViewLibros;
     private Button btnBuscarAutor, btnBuscarTitulo;
     private EditText etBuscar;
+    private Toolbar tb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +50,7 @@ public class listadoLibros extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(Throwable t) {
-                    Toast.makeText(listadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ListadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -58,10 +63,14 @@ public class listadoLibros extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(Throwable t) {
-                    Toast.makeText(listadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ListadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
                 }
             });
         });
+
+        // uso esto porque todas las toolbar van a ser iguales, asi que le paso el contexto y toda la logica que voy a repetir en todas las clases las manejo en helpers
+        tb = findViewById(R.id.toolbar);
+        cargarToolbar(this,tb);
     }
 
     private void cargarAdapter(List<Book> booksSinFiltrar) {
@@ -120,7 +129,7 @@ public class listadoLibros extends AppCompatActivity {
                 Helpers.obtenerExistencias(book, myvh.txt_existencias, myvh.txt_disponibles);
 
                 myvh.getBtn1().setOnClickListener((view) -> {
-                    Intent intent = new Intent(listadoLibros.this, LibroInformacion.class);
+                    Intent intent = new Intent(ListadoLibros.this, LibroInformacion.class);
                     intent.putExtra(LibroInformacion.BOOK_ID_EXTRA, book.getId());
                     startActivity(intent);
                 });
@@ -149,7 +158,7 @@ public class listadoLibros extends AppCompatActivity {
 
             @Override
             public void onFailure(Throwable t) {
-                Toast.makeText(listadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ListadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
             }
         });
     }
