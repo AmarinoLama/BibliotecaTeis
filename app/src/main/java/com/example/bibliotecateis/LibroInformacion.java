@@ -1,5 +1,7 @@
 package com.example.bibliotecateis;
 
+import static com.example.bibliotecateis.Helpers.cargarToolbar;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -28,6 +31,7 @@ public class LibroInformacion extends AppCompatActivity {
     private TextView tvTitulo, tvIsbn, tvAutor, tvLibrosDisponibles, tvProximoDisponible, tvLibrosExistentes;
     private ImageView ivPortada;
     private Button btnPrestar, btnDevolver, btnVolver;
+    private Toolbar tb;
 
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
 
@@ -66,6 +70,9 @@ public class LibroInformacion extends AppCompatActivity {
         });
 
         btnPrestar.setOnClickListener(v -> scanCode());
+
+        tb = findViewById(R.id.toolbar);
+        cargarToolbar(this,tb);
     }
 
     private void scanCode() {
