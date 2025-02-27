@@ -14,7 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.bibliotecateis.API.models.Book;
+import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.ImageRepository;
 import com.journeyapps.barcodescanner.CaptureActivity;
@@ -52,6 +55,7 @@ public class LibroInformacion extends AppCompatActivity {
 
         btnDevolver.setOnClickListener(v -> {
             // Devolver libro
+            // cambiar las variables de libro disponible o actualizar la página para refrescar los datos
         });
 
         btnVolver.setOnClickListener(v -> {
@@ -118,7 +122,14 @@ public class LibroInformacion extends AppCompatActivity {
         });
     }
 
-    private void cargarBotones(String user) {
+    private void cargarBotones() {
+        UserViewModel userViewModel = new ViewModelProvider(LibroInformacion.this).get(UserViewModel.class);
+        User user = userViewModel.getUser().getValue();
 
+        // Gestionar botón devolver libro si el usuario tiene el libro o no
+        btnDevolver.setEnabled(Helpers.userHasBook(user, tvIsbn.getText().toString()));
+        
+        // Gestionar botón prestar libro si hay libros disponibles
+        btnPrestar.setEnabled(Integer.parseInt(tvLibrosDisponibles.getText().toString()) > 0);
     }
 }
