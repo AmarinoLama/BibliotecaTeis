@@ -34,15 +34,15 @@ public class MenuPrincipal extends AppCompatActivity {
         setContentView(R.layout.menu_principal);
 
         recyclerMenu = findViewById(R.id.recyclerMenu);
-        recyclerMenu.setLayoutManager(new LinearLayoutManager((this)));
+        //Esto sería para que el recyclerview fuera en vertical
+        //recyclerMenu.setLayoutManager(new LinearLayoutManager((this)));
+        recyclerMenu.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         cargarBooks();
-
 
        /* //Obtenemos el tool bar y lo asignamos como toolbar por defecto
         Toolbar myToolbar = findViewById(R.id.toolbarmenu);
         setSupportActionBar(myToolbar);*/
     }
-
 
 private void cargarAdapter(List<Book> booksrandom) {
 
@@ -88,7 +88,6 @@ private void cargarAdapter(List<Book> booksrandom) {
             Book book = books.get(position);
             myvh.getTxtTitulo().setText(book.getTitle());
             myvh.getTxtAutor().setText(book.getAuthor());
-
 
             myvh.getImgBtnLibro().setOnClickListener((view) -> {
                 Intent intent = new Intent(MenuPrincipal.this, LibroInformacion.class);
