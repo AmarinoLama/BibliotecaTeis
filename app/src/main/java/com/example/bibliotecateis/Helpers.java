@@ -1,8 +1,12 @@
 package com.example.bibliotecateis;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -185,14 +189,12 @@ public class Helpers {
                 int id = menuItem.getItemId();
                 // Maneja la selección de los elementos del menú
                 if(id == R.id.btnMenuListadoLibros){
-                    // Muestra un mensaje de "Opción 1" si se selecciona 'btnMenuListadoLibros'
-                    Toast.makeText(context, "Opción 1", Toast.LENGTH_SHORT).show();
-                    return true;
+                    Intent intent = new Intent(context, ListadoLibros.class);
+                    context.startActivity(intent);
                 }
                 if(id == R.id.btnMenuLogin){
-                    // Muestra un mensaje de "Opción 2" si se selecciona 'btnMenuLogin'
-                    Toast.makeText(context, "Opción 2", Toast.LENGTH_SHORT).show();
-                    return true;
+                    Intent intent = new Intent(context, Login.class);
+                    context.startActivity(intent);
                 }
                 if(id == R.id.btnMenuCamara){
                     // Muestra un mensaje de "Opción 3" si se selecciona 'btnMenuCamara'
@@ -204,7 +206,6 @@ public class Helpers {
             }
         });
     }
-}
 
     public static boolean userHasBook(User user, String bookIsbn) {
         List<BookLending> lendingsUser = getLendingsUser(user);

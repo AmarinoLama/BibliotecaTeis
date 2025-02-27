@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void abrirListadoLibros() {
-        Intent intent = new Intent(MainActivity.this, listadoLibros.class);
+        Intent intent = new Intent(MainActivity.this, ListadoLibros.class);
         startActivity(intent);
     }
 
