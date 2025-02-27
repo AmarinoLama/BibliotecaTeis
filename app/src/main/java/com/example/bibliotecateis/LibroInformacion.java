@@ -70,6 +70,8 @@ public class LibroInformacion extends AppCompatActivity {
         });
 
         btnPrestar.setOnClickListener(v -> scanCode());
+
+        //cargarBotones();
     }
 
     private void scanCode() {
@@ -130,6 +132,8 @@ public class LibroInformacion extends AppCompatActivity {
         btnDevolver.setEnabled(Helpers.userHasBook(user, tvIsbn.getText().toString()));
         
         // Gestionar botón prestar libro si hay libros disponibles
-        btnPrestar.setEnabled(Integer.parseInt(tvLibrosDisponibles.getText().toString()) > 0);
+        int librosDispobibles = Integer.parseInt(tvLibrosDisponibles.getText().toString());
+        // trucar lo de arriba pq devuelve "n Libros"
+        btnPrestar.setEnabled(librosDispobibles > 0);
     }
 }
