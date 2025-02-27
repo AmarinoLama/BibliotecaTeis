@@ -94,6 +94,15 @@ public class Helpers {
         return librosSinRepetir;
     }
 
+    public static List<Book> getLibrosRandom(List<Book> libros,int cantidad){
+        List<Book> librosRandom = new ArrayList<>();
+        for (int i = 0; i < cantidad; i++) {
+            int random = (int) (Math.random() * libros.size());
+            librosRandom.add(libros.get(random));
+        }
+        return librosRandom;
+    }
+
     public static void getNextDevolucion(Book book, TextView tvProximoDisponible){
         StringBuilder mensaje = new StringBuilder();
         BookLendingRepository bookLendingRepository = new BookLendingRepository();
