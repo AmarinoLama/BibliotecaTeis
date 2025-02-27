@@ -13,9 +13,10 @@ public class MainActivity extends AppCompatActivity {
 
         //abrirLogin();
 
-        abrirListadoLibros();
+        //abrirListadoLibros();
 
         //abrirLibroInformacion();
+        abrirMenuPrincipal();
 
     }
 
@@ -31,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void abrirLibroInformacion() {
         Intent intent = new Intent(MainActivity.this, LibroInformacion.class);
+        startActivity(intent);
+    }
+
+    private void abrirMenuPrincipal() {
+        Intent intent = new Intent(MainActivity.this, MenuPrincipal.class);
         startActivity(intent);
     }
 }

@@ -1,10 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MenuPrincipal">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/background_light">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarmenu"
+        android:layout_width="397dp"
+        android:layout_height="wrap_content"
+        android:background="@color/accent"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="Menu principal" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMenu"
+            android:layout_width="126dp"
+            android:layout_height="333dp"
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@id/textoMenu" />
+
+        <TextView
+            android:id="@+id/textoMenu"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Texto informativo para poner en el menu principal para
+            imaginar que hubiera mucho texto por ejemplo esto
+             que se esta comiendo la lista de la derecha" />
+    </RelativeLayout>
+</LinearLayout>
