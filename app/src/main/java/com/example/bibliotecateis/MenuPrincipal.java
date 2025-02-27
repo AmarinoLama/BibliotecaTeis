@@ -1,5 +1,7 @@
 package com.example.bibliotecateis;
 
+import static com.example.bibliotecateis.Helpers.cargarToolbar;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,7 +28,7 @@ public class MenuPrincipal extends AppCompatActivity {
 
     private BookRepository bookRepository;
     private RecyclerView recyclerMenu;
-    private Toolbar toolbarmenu;
+    private Toolbar tb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,9 @@ public class MenuPrincipal extends AppCompatActivity {
        /* //Obtenemos el tool bar y lo asignamos como toolbar por defecto
         Toolbar myToolbar = findViewById(R.id.toolbarmenu);
         setSupportActionBar(myToolbar);*/
+
+        tb = findViewById(R.id.toolbar);
+        cargarToolbar(this,tb);
     }
 
 private void cargarAdapter(List<Book> booksrandom) {

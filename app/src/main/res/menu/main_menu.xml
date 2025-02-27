@@ -3,15 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/btnMenuIrA"
+        android:title="Menu Principal"
+        android:icon="@drawable/icono_lupa"
+        app:showAsAction="ifRoom" >
+        <menu >
+            <item
+                android:id="@+id/btnMenuListadoLibros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Libros"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/btnMenuMenuPrincipal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Menu Principal"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
+    <item
         android:id="@+id/btnMenuCamara"
+        android:icon="@drawable/icono_camara"
         android:title="Camara"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/btnMenuListadoLibros"
-        android:title="Libros"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/btnMenuLogin"
+        android:icon="@drawable/icono_login"
         android:title="Login"
         app:showAsAction="ifRoom" />
 </menu>

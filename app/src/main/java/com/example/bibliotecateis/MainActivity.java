@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
         //abrirListadoLibros();
 
         //abrirLibroInformacion();
-        abrirMenuPrincipal();
 
     }
 

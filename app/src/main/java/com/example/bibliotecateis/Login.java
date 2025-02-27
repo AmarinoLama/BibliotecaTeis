@@ -60,7 +60,7 @@ public class Login extends AppCompatActivity {
                         userViewModel = new ViewModelProvider(Login.this).get(UserViewModel.class);
                         userViewModel.actualizarUser(user);
                         Toast.makeText(Login.this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Login.this, ListadoLibros.class);
+                        Intent intent = new Intent(Login.this, MenuPrincipal.class);
                         startActivity(intent);
                     }
                 }

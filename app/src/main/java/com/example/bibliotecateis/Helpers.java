@@ -197,6 +197,10 @@ public class Helpers {
                 // Obtiene el ID del elemento del menú seleccionado
                 int id = menuItem.getItemId();
                 // Maneja la selección de los elementos del menú
+                if(id == R.id.btnMenuMenuPrincipal){
+                    Intent intent = new Intent(context, MenuPrincipal.class);
+                    context.startActivity(intent);
+                }
                 if(id == R.id.btnMenuListadoLibros){
                     Intent intent = new Intent(context, ListadoLibros.class);
                     context.startActivity(intent);
