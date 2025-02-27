@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.models.BookLending;
+import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.ImageRepository;
@@ -17,7 +18,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -138,5 +138,36 @@ public class Helpers {
         LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
         LocalDateTime newDateTime = dateTime.plusDays(dias);
         return newDateTime.format(formatter);
+    }
+
+    public static List<BookLending> getLendingsUser(User user) {
+        List<BookLending> lendingsUser = new ArrayList<>();
+        BookLendingRepository bookLendingRepository = new BookLendingRepository();
+        bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
+            @Override
+            public void onSuccess(List<BookLending> result) {
+                for (BookLending bookLending : result) {
+                    if (bookLending.getUser().getId() == user.getId()) {
+                        lendingsUser.add(bookLending);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                System.out.println("Error al buscar los prestamos");
+            }
+        });
+        return lendingsUser;
+    }
+
+    public static boolean userHasBook(User user, String bookIsbn) {
+        List<BookLending> lendingsUser = getLendingsUser(user);
+        for (BookLending bookLending : lendingsUser) {
+            if (bookLending.getBook().getIsbn().equals(bookIsbn)) {
+                System.out.println("El usuario tiene el libro");
+                return true;
+            }
+        }
+        return false;
     }
 }

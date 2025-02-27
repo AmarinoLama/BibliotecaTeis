@@ -10,7 +10,6 @@ public class BookLending {
 
     // Getters & Setters
 
-
     public int getBookId() {
         return bookId;
     }
