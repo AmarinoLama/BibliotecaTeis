@@ -5,18 +5,15 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.UserRepository;
-
 import java.util.List;
 
 public class Login extends AppCompatActivity {
@@ -24,7 +21,7 @@ public class Login extends AppCompatActivity {
     private Button btnLogin;
     private EditText etContrasena, etUsuario;
     private UserRepository userRepository;
-    UserViewModel userViewModel;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +60,11 @@ public class Login extends AppCompatActivity {
                         userViewModel = new ViewModelProvider(Login.this).get(UserViewModel.class);
                         userViewModel.actualizarUser(user);
                         Toast.makeText(Login.this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
-                        finish();
-
-                    } else {
-                        /* entra 4 veces aquí */
-                        Toast.makeText(Login.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Login.this, listadoLibros.class);
+                        startActivity(intent);
                     }
                 }
+                Toast.makeText(Login.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
             }
 
             @Override

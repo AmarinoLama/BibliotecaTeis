@@ -12,6 +12,12 @@ import java.util.List;
 
 public class UserViewModel extends ViewModel {
 
+
+
+    public UserViewModel() {
+        userActive = new MutableLiveData<>();
+    }
+
     private final MutableLiveData<User> userActive;
 
     public UserViewModel(User user) {
