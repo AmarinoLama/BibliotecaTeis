@@ -24,7 +24,7 @@ public class Login extends AppCompatActivity {
     private Button btnLogin;
     private EditText etContrasena, etUsuario;
     private UserRepository userRepository;
-    UserViewModel userViewModel;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
