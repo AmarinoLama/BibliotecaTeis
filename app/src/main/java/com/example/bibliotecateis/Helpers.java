@@ -2,6 +2,7 @@ package com.example.bibliotecateis;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.ImageRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -90,15 +92,26 @@ public class Helpers {
             public void onSuccess(List<BookLending> result) {
                 String ultimaFecha = "";
                 for (BookLending bookLending : result) {
-                    if (ultimaFecha.isEmpty()) {
-                        ultimaFecha = bookLending.getLendDate();
-                        continue;
-                    }
-                    if (bookLending.getBook().getIsbn().equals(book.getIsbn())) {
-                        ultimaFecha = compararFechas(bookLending.getLendDate(),ultimaFecha);
+                    if (bookLending.getBook().getIsbn().equals(book.getIsbn())){
+                        if (ultimaFecha.isEmpty()) {
+                            ultimaFecha = bookLending.getLendDate();
+                            continue;
+                        }
+                        if (bookLending.getBook().getIsbn().equals(book.getIsbn())) {
+                            ultimaFecha = compararFechas(bookLending.getLendDate(), ultimaFecha);
+                        }
                     }
                 }
-                tvProximoDisponible.setText("(" + sumarDias(ultimaFecha,15) + ")");
+                if (ultimaFecha.isEmpty()) {
+                    tvProximoDisponible.setText("");
+                    return;
+                }
+                String fechaDevolucion = sumarDias(ultimaFecha,15);
+                if(compararFechas(fechaDevolucion, String.valueOf(LocalDateTime.now()).substring(0,19)).equals(ultimaFecha)){
+                    tvProximoDisponible.setTextColor(Color.RED);
+                }
+                fechaDevolucion = fechaDevolucion.substring(0,fechaDevolucion.indexOf('T'));
+                tvProximoDisponible.setText("(" + fechaDevolucion + ")");
             }
 
             @Override
