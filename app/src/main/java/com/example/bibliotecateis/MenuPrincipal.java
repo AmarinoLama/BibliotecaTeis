@@ -41,12 +41,13 @@ public class MenuPrincipal extends AppCompatActivity {
         recyclerMenu.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         cargarBooks();
 
-       /* //Obtenemos el tool bar y lo asignamos como toolbar por defecto
+        /*//Obtenemos el tool bar y lo asignamos como toolbar por defecto
         Toolbar myToolbar = findViewById(R.id.toolbarmenu);
         setSupportActionBar(myToolbar);*/
 
         tb = findViewById(R.id.toolbar);
-        cargarToolbar(this,tb);
+        Helpers.inicializarQRLauncher(this);
+        Helpers.cargarToolbar(this, tb);
     }
 
 private void cargarAdapter(List<Book> booksrandom) {
@@ -127,5 +128,6 @@ private void cargarAdapter(List<Book> booksrandom) {
             }
         });
     }
+
 
 }

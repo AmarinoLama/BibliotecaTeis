@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,6 +24,9 @@ import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.ImageRepository;
 import com.example.bibliotecateis.EditPreferences.EditPreferences;
+import com.journeyapps.barcodescanner.CaptureActivity;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +35,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Helpers {
+
+    public static ActivityResultLauncher<ScanOptions> qrLauncher;
 
     // ESTA CLASE ME DIJO EL PROFE QUE LA CREE, NO TE ENFADES VICTOR <3
 
@@ -211,12 +217,33 @@ public class Helpers {
                     context.startActivity(intent);
                 }
                 if(id == R.id.btnMenuCamara){
-                    // Muestra un mensaje de "Opción 3" si se selecciona 'btnMenuCamara'
-                    Toast.makeText(context, "Opción 3", Toast.LENGTH_SHORT).show();
-                    return true;
+                    scanearQR();
                 }
+
                 // Devuelve false si no se selecciona ningún elemento conocido
                 return false;
+            }
+        });
+    }
+
+    public static void scanearQR() {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Escanea el código de barras");
+        options.setBeepEnabled(true);
+        options.setOrientationLocked(true);
+        options.setCaptureActivity(CaptureActivity.class);
+
+        if (qrLauncher != null) {
+            qrLauncher.launch(options);
+        } else {
+            System.out.println("QR Launcher no inicializado");
+        }
+    }
+
+    public static void inicializarQRLauncher(AppCompatActivity context) {
+        qrLauncher = context.registerForActivityResult(new ScanContract(), result -> {
+            if (result.getContents() != null) {
+                Toast.makeText(context, "Código escaneado: " + result.getContents(), Toast.LENGTH_SHORT).show();
             }
         });
     }

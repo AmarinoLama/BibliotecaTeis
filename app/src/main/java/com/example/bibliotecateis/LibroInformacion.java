@@ -38,7 +38,7 @@ public class LibroInformacion extends AppCompatActivity {
     private Button btnPrestar, btnDevolver, btnVolver;
     private Toolbar tb;
 
-    private ActivityResultLauncher<ScanOptions> barcodeLauncher;
+    public static ActivityResultLauncher<ScanOptions> barcodeLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +72,8 @@ public class LibroInformacion extends AppCompatActivity {
             if (result.getContents() != null) {
                 String scannedData = result.getContents();
                 System.out.println("QR Escaneado: " + scannedData);
+                // El QR escaneado devuelve el isbn del libro 3 (9780201616224)
+                // El archivo está en drawble, hay que meterlo en el móvil para testearlo
             }
         });
 
@@ -80,19 +82,16 @@ public class LibroInformacion extends AppCompatActivity {
         tb = findViewById(R.id.toolbar);
         cargarToolbar(this,tb);
 
-        cargarBotones();
+        //cargarBotones();
     }
 
-    private void scanCode() {
+    public static void scanCode() {
+
         ScanOptions options = new ScanOptions();
         options.setPrompt("Escanea un código QR");
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);
         options.setCaptureActivity(CaptureActivity.class);
-
-        //hacer algo q lea el codigo qr
-
-        //harcodear el código q lee x defecto
 
         barcodeLauncher.launch(options);
     }
@@ -138,6 +137,7 @@ public class LibroInformacion extends AppCompatActivity {
         int userId = sp.getInt(USER_ID, 0);
 
         // Gestionar botón devolver libro si el usuario tiene el libro o no
+        // La lista de lendings está vacía a pesar de q entra en el if
         btnDevolver.setEnabled(Helpers.userHasBook(userId, tvIsbn.getText().toString()));
 
         /*// Gestionar botón prestar libro si hay libros disponibles
@@ -145,4 +145,5 @@ public class LibroInformacion extends AppCompatActivity {
         // trucar lo de arriba pq devuelve "n Libros"
         btnPrestar.setEnabled(librosDispobibles > 0);*/
     }
+
 }
