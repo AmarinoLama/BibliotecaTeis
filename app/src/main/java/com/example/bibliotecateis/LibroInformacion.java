@@ -3,6 +3,7 @@ package com.example.bibliotecateis;
 import static com.example.bibliotecateis.Helpers.cargarToolbar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -29,8 +30,9 @@ import com.journeyapps.barcodescanner.ScanOptions;
 
 public class LibroInformacion extends AppCompatActivity {
 
-
+    public static String USER_ID = "userId";
     public static String BOOK_ID_EXTRA = "bookId";
+
     private TextView tvTitulo, tvIsbn, tvAutor, tvLibrosDisponibles, tvProximoDisponible, tvLibrosExistentes;
     private ImageView ivPortada;
     private Button btnPrestar, btnDevolver, btnVolver;
@@ -78,7 +80,7 @@ public class LibroInformacion extends AppCompatActivity {
         tb = findViewById(R.id.toolbar);
         cargarToolbar(this,tb);
 
-        //cargarBotones();
+        cargarBotones();
     }
 
     private void scanCode() {
@@ -132,15 +134,15 @@ public class LibroInformacion extends AppCompatActivity {
     }
 
     private void cargarBotones() {
-        UserViewModel userViewModel = new ViewModelProvider(LibroInformacion.this).get(UserViewModel.class);
-        User user = userViewModel.getUser().getValue();
+        SharedPreferences sp = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE);
+        int userId = sp.getInt(USER_ID, 0);
 
         // Gestionar botón devolver libro si el usuario tiene el libro o no
-        btnDevolver.setEnabled(Helpers.userHasBook(user, tvIsbn.getText().toString()));
+        btnDevolver.setEnabled(Helpers.userHasBook(userId, tvIsbn.getText().toString()));
 
-        // Gestionar botón prestar libro si hay libros disponibles
+        /*// Gestionar botón prestar libro si hay libros disponibles
         int librosDispobibles = Integer.parseInt(tvLibrosDisponibles.getText().toString());
         // trucar lo de arriba pq devuelve "n Libros"
-        btnPrestar.setEnabled(librosDispobibles > 0);
+        btnPrestar.setEnabled(librosDispobibles > 0);*/
     }
 }

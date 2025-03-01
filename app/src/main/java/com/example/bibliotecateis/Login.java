@@ -1,7 +1,9 @@
 package com.example.bibliotecateis;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -10,13 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.ViewModelProvider;
 import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.UserRepository;
 import java.util.List;
 
 public class Login extends AppCompatActivity {
+
+    public static String SHARED_PREFERENCES = "sharedPreferences";
 
     private Button btnLogin;
     private EditText etContrasena, etUsuario;
@@ -57,11 +60,18 @@ public class Login extends AppCompatActivity {
             public void onSuccess(List<User> result) {
                 for(User user : result) {
                     if(user.getEmail().equals(usuario) && user.getPasswordHash().equals(password)) {
-                        userViewModel = new ViewModelProvider(Login.this).get(UserViewModel.class);
-                        userViewModel.actualizarUser(user);
+                        /*userViewModel = new ViewModelProvider(Login.this).get(UserViewModel.class);
+                        userViewModel.actualizarUser(user);*/
+
+                        SharedPreferences sp = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putInt(LibroInformacion.USER_ID, user.getId());
+                        editor.apply();
+
                         Toast.makeText(Login.this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, MenuPrincipal.class);
                         startActivity(intent);
+                        return;
                     }
                 }
                 Toast.makeText(Login.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();

@@ -150,6 +150,7 @@ public class ListadoLibros extends AppCompatActivity {
 
     public void cargarBooks() {
         bookRepository = new BookRepository();
+
         bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
             @Override
             public void onSuccess(List<Book> result) {

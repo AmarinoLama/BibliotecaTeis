@@ -22,12 +22,11 @@ import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.ImageRepository;
+import com.example.bibliotecateis.EditPreferences.EditPreferences;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -159,15 +158,16 @@ public class Helpers {
         return newDateTime.format(formatter);
     }
 
-    public static List<BookLending> getLendingsUser(User user) {
+    public static List<BookLending> getLendingsUser(int userId) {
         List<BookLending> lendingsUser = new ArrayList<>();
         BookLendingRepository bookLendingRepository = new BookLendingRepository();
         bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
             @Override
             public void onSuccess(List<BookLending> result) {
                 for (BookLending bookLending : result) {
-                    if (bookLending.getUser().getId() == user.getId()) {
+                    if (bookLending.getUser().getId() == userId) {
                         lendingsUser.add(bookLending);
+                        System.out.println("Dentro if: " + lendingsUser);
                     }
                 }
             }
@@ -176,9 +176,10 @@ public class Helpers {
                 System.out.println("Error al buscar los prestamos");
             }
         });
+
+        System.out.println("Fuera if: " + lendingsUser);
         return lendingsUser;
     }
-
 
     public static void cargarToolbar(AppCompatActivity context, Toolbar tb) {
         // Configura la barra de herramientas (Toolbar) en la actividad proporcionada
@@ -220,11 +221,10 @@ public class Helpers {
         });
     }
 
-    public static boolean userHasBook(User user, String bookIsbn) {
-        List<BookLending> lendingsUser = getLendingsUser(user);
+    public static boolean userHasBook(int userId, String bookIsbn) {
+        List<BookLending> lendingsUser = getLendingsUser(userId);
         for (BookLending bookLending : lendingsUser) {
             if (bookLending.getBook().getIsbn().equals(bookIsbn)) {
-                System.out.println("El usuario tiene el libro");
                 return true;
             }
         }
