@@ -1,13 +1,20 @@
 package com.example.bibliotecateis.EditPreferences;
 
+import static com.example.bibliotecateis.Helpers.cargarToolbar;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.bibliotecateis.MenuPrincipal;
 import com.example.bibliotecateis.R;
 
 public class EditPreferences extends AppCompatActivity {
@@ -23,9 +30,12 @@ public class EditPreferences extends AppCompatActivity {
             return insets;
         });
 
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(android.R.id.content, new PreferenceFragment())
                 .commit();
+
+
     }
 }

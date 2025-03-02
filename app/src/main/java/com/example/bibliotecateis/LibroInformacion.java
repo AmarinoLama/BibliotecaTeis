@@ -21,12 +21,18 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bibliotecateis.API.models.Book;
+import com.example.bibliotecateis.API.models.BookLending;
 import com.example.bibliotecateis.API.models.User;
+import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.ImageRepository;
 import com.journeyapps.barcodescanner.CaptureActivity;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class LibroInformacion extends AppCompatActivity {
 
@@ -122,6 +128,7 @@ public class LibroInformacion extends AppCompatActivity {
                 }
                 Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles);
                 Helpers.getNextDevolucion(result,tvProximoDisponible);
+                cargarBotones(result);
 
             }
 
@@ -132,18 +139,28 @@ public class LibroInformacion extends AppCompatActivity {
         });
     }
 
-    private void cargarBotones() {
-        SharedPreferences sp = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE);
-        int userId = sp.getInt(USER_ID, 0);
+    private void cargarBotones(Book book) {
+        int userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
 
-        // Gestionar botón devolver libro si el usuario tiene el libro o no
-        // La lista de lendings está vacía a pesar de q entra en el if
-        btnDevolver.setEnabled(Helpers.userHasBook(userId, tvIsbn.getText().toString()));
-
-        /*// Gestionar botón prestar libro si hay libros disponibles
-        int librosDispobibles = Integer.parseInt(tvLibrosDisponibles.getText().toString());
-        // trucar lo de arriba pq devuelve "n Libros"
-        btnPrestar.setEnabled(librosDispobibles > 0);*/
+        BookLendingRepository bookLendingRepository = new BookLendingRepository();
+        bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
+            @Override
+            public void onSuccess(List<BookLending> lendings) {
+                for (BookLending bookLending : lendings) {
+                    if (bookLending.getUser().getId() == userId && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn())) {
+                        btnDevolver.setEnabled(true);
+                        btnPrestar.setEnabled(false);
+                        return;
+                    }
+                }
+                btnDevolver.setEnabled(false);
+                btnPrestar.setEnabled(true);
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                System.out.println("Error al buscar los prestamos");
+            }
+        });
     }
 
 }

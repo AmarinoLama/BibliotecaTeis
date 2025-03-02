@@ -4,10 +4,10 @@
 
     <item
         android:id="@+id/btnMenuIrA"
-        android:title="Menu Principal"
         android:icon="@drawable/icono_lupa"
-        app:showAsAction="ifRoom" >
-        <menu >
+        android:title="Menu Principal"
+        app:showAsAction="ifRoom">
+        <menu>
             <item
                 android:id="@+id/btnMenuListadoLibros"
                 android:layout_width="wrap_content"
@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:title="Menu Principal"
-                app:showAsAction="never"/>
+                app:showAsAction="never" />
         </menu>
     </item>
     <item
@@ -31,5 +31,26 @@
         android:id="@+id/btnMenuLogin"
         android:icon="@drawable/icono_login"
         android:title="Login"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/btnMenuVolverLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Volver al Log In"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/btnMenuIrPerfilUsuario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Perfil De Usuario"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/btnMenuPreferencias"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Ir a las Preferencias"
+                app:showAsAction="never" />
+        </menu>
+    </item>
 </menu>

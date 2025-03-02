@@ -212,12 +212,20 @@ public class Helpers {
                     Intent intent = new Intent(context, ListadoLibros.class);
                     context.startActivity(intent);
                 }
-                if(id == R.id.btnMenuLogin){
+                if(id == R.id.btnMenuVolverLogin){
                     Intent intent = new Intent(context, Login.class);
                     context.startActivity(intent);
                 }
                 if(id == R.id.btnMenuCamara){
                     scanearQR();
+                }
+                if(id == R.id.btnMenuIrPerfilUsuario){
+                    Intent intent = new Intent(context, EditPreferences.class);
+                    context.startActivity(intent);
+                }
+                if(id == R.id.btnMenuPreferencias){
+                    Intent intent = new Intent(context, EditPreferences.class);
+                    context.startActivity(intent);
                 }
 
                 // Devuelve false si no se selecciona ningún elemento conocido
@@ -248,10 +256,10 @@ public class Helpers {
         });
     }
 
-    public static boolean userHasBook(int userId, String bookIsbn) {
+    public static boolean userHasBook(int userId, Book book) {
         List<BookLending> lendingsUser = getLendingsUser(userId);
         for (BookLending bookLending : lendingsUser) {
-            if (bookLending.getBook().getIsbn().equals(bookIsbn)) {
+            if (bookLending.getBook().getIsbn().equals(book.getIsbn())) {
                 return true;
             }
         }
