@@ -1,4 +1,4 @@
-package com.example.bibliotecateis;
+package com.example.bibliotecateis.Activities;
 
 import static com.example.bibliotecateis.Helpers.cargarToolbar;
 
@@ -20,6 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.repository.BookRepository;
+import com.example.bibliotecateis.Helpers;
+import com.example.bibliotecateis.R;
+
 import java.util.List;
 
 public class ListadoLibros extends AppCompatActivity {

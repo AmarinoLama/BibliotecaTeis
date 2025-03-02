@@ -4,6 +4,8 @@ import android.util.Log;
 import com.example.bibliotecateis.API.models.BookLending;
 import com.example.bibliotecateis.API.retrofit.ApiService;
 import com.example.bibliotecateis.API.retrofit.ApiClient;
+
+import java.io.IOException;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,8 +34,8 @@ public class BookLendingRepository {
         });
     }
 
-    public void lendBook(BookLending lending, final BookRepository.ApiCallback<Boolean> callback) {
-        apiService.lendBook(lending).enqueue(new Callback<BookLending>() {
+    public void lendBook(int userId, int bookId, final BookRepository.ApiCallback<Boolean> callback) {
+        apiService.lendBook(userId, bookId).enqueue(new Callback<BookLending>() {
             @Override
             public void onResponse(Call<BookLending> call, Response<BookLending> response) {
                 callback.onSuccess(response.isSuccessful());
@@ -46,6 +48,7 @@ public class BookLendingRepository {
             }
         });
     }
+
 
     public void returnBook(int id, final BookRepository.ApiCallback<Boolean> callback) {
         apiService.returnBook(id).enqueue(new Callback<Void>() {

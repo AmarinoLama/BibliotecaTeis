@@ -5,10 +5,19 @@ public class BookLending {
     private int bookId;
     private int userId;
     private String lendDate;
+    private String returnDate;
     private Book book;
     private User user;
 
     // Getters & Setters
+
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+    }
 
     public int getBookId() {
         return bookId;

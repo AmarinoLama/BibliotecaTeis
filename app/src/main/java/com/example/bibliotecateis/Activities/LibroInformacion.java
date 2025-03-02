@@ -1,36 +1,26 @@
-package com.example.bibliotecateis;
+package com.example.bibliotecateis.Activities;
 
 import static com.example.bibliotecateis.Helpers.cargarToolbar;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.models.BookLending;
-import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
-import com.example.bibliotecateis.API.repository.ImageRepository;
-import com.journeyapps.barcodescanner.CaptureActivity;
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
+import com.example.bibliotecateis.Helpers;
+import com.example.bibliotecateis.Login.Login;
+import com.example.bibliotecateis.R;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,7 +34,10 @@ public class LibroInformacion extends AppCompatActivity {
     private Button btnPrestar, btnDevolver, btnVolver;
     private Toolbar tb;
 
-    public static ActivityResultLauncher<ScanOptions> barcodeLauncher;
+    private String[] isbnEscaneado = new String[]{""};
+
+    public int userId = 0;
+    public int bookId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,51 +51,46 @@ public class LibroInformacion extends AppCompatActivity {
         });
 
         inicializar();
+        userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
+        bookId = getIntent().getIntExtra(BOOK_ID_EXTRA, 0);
+        cargarInfoLibro(bookId);
 
-        // Cargar información del libro
-        Intent intent = getIntent();
-        Integer idLibro = intent.getIntExtra(BOOK_ID_EXTRA, 0);
+        Helpers.inicializarQRLauncher(this, isbnEscaneado, result -> {
+            isbnEscaneado[0] = result;
+            System.out.println("ISBN escaneado desde LibroInformacion: " + isbnEscaneado[0]);
+            // Si quiero meterle un método para usar el result ponerlo aquí
+        });
 
-        cargarInfoLibro(idLibro);
+        btnPrestar.setOnClickListener(v -> {
+            //Helpers.scanearQR();
+            Helpers.prestarLibro(userId, bookId);
+            btnPrestar.setEnabled(false);
+            btnDevolver.setEnabled(true);
+            tvLibrosDisponibles.setText(String.valueOf(Integer.parseInt(tvLibrosDisponibles.getText().toString()) - 1));
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime futureDate = now.plusDays(15);
+            tvProximoDisponible.setText("(Devolución: " + futureDate.toLocalDate() + ")");
+        });
 
         btnDevolver.setOnClickListener(v -> {
-            // Devolver libro
-            // cambiar las variables de libro disponible o actualizar la página para refrescar los datos
+            Helpers.devolverLibro(bookId);
+            btnDevolver.setEnabled(false);
+            btnPrestar.setEnabled(true);
+            tvLibrosDisponibles.setText(String.valueOf(Integer.parseInt(tvLibrosDisponibles.getText().toString()) + 1));
+            tvProximoDisponible.setText("");
         });
 
         btnVolver.setOnClickListener(v -> {
             finish();
         });
 
-        barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
-            if (result.getContents() != null) {
-                String scannedData = result.getContents();
-                System.out.println("QR Escaneado: " + scannedData);
-                // El QR escaneado devuelve el isbn del libro 3 (9780201616224)
-                // El archivo está en drawble, hay que meterlo en el móvil para testearlo
-            }
-        });
-
-        btnPrestar.setOnClickListener(v -> scanCode());
-
-        tb = findViewById(R.id.toolbar);
         cargarToolbar(this,tb);
 
         //cargarBotones();
     }
 
-    public static void scanCode() {
-
-        ScanOptions options = new ScanOptions();
-        options.setPrompt("Escanea un código QR");
-        options.setBeepEnabled(true);
-        options.setOrientationLocked(true);
-        options.setCaptureActivity(CaptureActivity.class);
-
-        barcodeLauncher.launch(options);
-    }
-
     private void inicializar() {
+        tb = findViewById(R.id.toolbar);
         tvTitulo = findViewById(R.id.tvTitulo);
         tvIsbn = findViewById(R.id.tvIsbn);
         tvAutor = findViewById(R.id.tvAutor);
@@ -140,14 +128,13 @@ public class LibroInformacion extends AppCompatActivity {
     }
 
     private void cargarBotones(Book book) {
-        int userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
 
         BookLendingRepository bookLendingRepository = new BookLendingRepository();
         bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
             @Override
             public void onSuccess(List<BookLending> lendings) {
                 for (BookLending bookLending : lendings) {
-                    if (bookLending.getUser().getId() == userId && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn())) {
+                    if (bookLending.getUserId() == userId && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn())) {
                         btnDevolver.setEnabled(true);
                         btnPrestar.setEnabled(false);
                         return;

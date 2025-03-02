@@ -8,74 +8,73 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/txt1"
+        android:id="@+id/txtTitulo"
         android:layout_width="223dp"
         android:layout_height="55dp"
-        android:text="TextView"
+        android:text="Titulo libro"
         android:textDirection="rtl"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:id="@+id/txt2"
+        android:id="@+id/txtFechaDevolucion"
         android:layout_width="223dp"
         android:layout_height="55dp"
-        android:text="TextView"
+        android:text="Fecha Devolución"
         android:textDirection="rtl"
-        app:layout_constraintBottom_toTopOf="@+id/btn1"
+        app:layout_constraintBottom_toTopOf="@+id/btnDevolver"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt1" />
+        app:layout_constraintTop_toBottomOf="@+id/txtTitulo"/>
 
     <Button
-        android:id="@+id/btn1"
+        android:id="@+id/btnDevolver"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Detalles"
+        android:text="Devolver"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
-        android:id="@+id/img1"
+        android:id="@+id/imgPortada"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/portada_libro_default" />
+        tools:src="@drawable/portada_libro_default"/>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Existencias del libro:"
-        app:layout_constraintBottom_toTopOf="@+id/txt_disponibles"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:text="Autor del libro: "
+        app:layout_constraintBottom_toTopOf="@+id/txtIsbn"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-        android:id="@+id/txt_existencias"
+        android:id="@+id/txtAutor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="null"
+        android:text="autor"
         app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintStart_toEndOf="@+id/textView2" />
+        app:layout_constraintStart_toEndOf="@+id/textView2"/>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Existencias disponibles:"
+        android:text="Isbn del libro: "
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-        android:id="@+id/txt_disponibles"
+        android:id="@+id/txtIsbn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="null"
+        android:text="isbn"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView" />
+        app:layout_constraintStart_toEndOf="@+id/textView"/>
 
     <View
-        android:id="@+id/divider"
         android:layout_width="409dp"
         android:layout_height="1dp"
         android:background="@color/gray"

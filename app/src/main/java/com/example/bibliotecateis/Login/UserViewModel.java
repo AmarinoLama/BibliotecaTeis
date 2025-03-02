@@ -1,14 +1,10 @@
-package com.example.bibliotecateis;
+package com.example.bibliotecateis.Login;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.models.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserViewModel extends ViewModel {
 

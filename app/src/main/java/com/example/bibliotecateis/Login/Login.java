@@ -1,9 +1,8 @@
-package com.example.bibliotecateis;
+package com.example.bibliotecateis.Login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,6 +14,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.UserRepository;
+import com.example.bibliotecateis.Activities.LibroInformacion;
+import com.example.bibliotecateis.Activities.MenuPrincipal;
+import com.example.bibliotecateis.R;
+
 import java.util.List;
 
 public class Login extends AppCompatActivity {
