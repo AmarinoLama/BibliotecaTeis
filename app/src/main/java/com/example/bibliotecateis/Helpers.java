@@ -120,7 +120,7 @@ public class Helpers {
             public void onSuccess(List<BookLending> result) {
                 String ultimaFecha = "";
                 for (BookLending bookLending : result) {
-                    if (bookLending.getBook().getIsbn().equals(book.getIsbn())){
+                    if (bookLending.getBook().getIsbn().equals(book.getIsbn()) && bookLending.getReturnDate() == null) {
                         if (ultimaFecha.isEmpty()) {
                             ultimaFecha = bookLending.getLendDate();
                             continue;

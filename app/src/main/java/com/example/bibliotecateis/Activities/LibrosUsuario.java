@@ -2,6 +2,8 @@ package com.example.bibliotecateis.Activities;
 
 import static com.example.bibliotecateis.Activities.LibroInformacion.USER_ID;
 import androidx.appcompat.widget.Toolbar;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,11 +41,11 @@ public class LibrosUsuario extends AppCompatActivity {
 
         userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
 
-        tb = findViewById(R.id.toolbar);
         Helpers.inicializarQRLauncher(this, isbnEscaneado, result -> {
             isbnEscaneado[0] = result;
             System.out.println("QR Escaneado desde LibrosUsuario: " + isbnEscaneado[0]);
         });
+        tb = findViewById(R.id.toolbar);
         Helpers.cargarToolbar(this, tb);
 
         recyclerView = findViewById(R.id.recyclerLibrosUsuario);
@@ -116,6 +118,8 @@ public class LibrosUsuario extends AppCompatActivity {
 
                 myvh.getBtnDevolver().setOnClickListener((view) -> {
                     Helpers.devolverLibro(book.getId());
+                    Intent i = new Intent(LibrosUsuario.this, LibrosUsuario.class);
+                    startActivity(i);
                 });
 
                 String urlImagen = book.getBookPicture();

@@ -1,6 +1,8 @@
 package com.example.bibliotecateis.Activities;
 
 import static com.example.bibliotecateis.Helpers.cargarToolbar;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -64,24 +66,21 @@ public class LibroInformacion extends AppCompatActivity {
         btnPrestar.setOnClickListener(v -> {
             //Helpers.scanearQR();
             Helpers.prestarLibro(userId, bookId);
-            btnPrestar.setEnabled(false);
-            btnDevolver.setEnabled(true);
-            tvLibrosDisponibles.setText(String.valueOf(Integer.parseInt(tvLibrosDisponibles.getText().toString()) - 1));
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime futureDate = now.plusDays(15);
-            tvProximoDisponible.setText("(Devolución: " + futureDate.toLocalDate() + ")");
+            Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
+            i.putExtra(BOOK_ID_EXTRA,bookId);
+            startActivity(i);
         });
 
         btnDevolver.setOnClickListener(v -> {
             Helpers.devolverLibro(bookId);
-            btnDevolver.setEnabled(false);
-            btnPrestar.setEnabled(true);
-            tvLibrosDisponibles.setText(String.valueOf(Integer.parseInt(tvLibrosDisponibles.getText().toString()) + 1));
-            tvProximoDisponible.setText("");
+            Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
+            i.putExtra(BOOK_ID_EXTRA,bookId);
+            startActivity(i);
         });
 
         btnVolver.setOnClickListener(v -> {
-            finish();
+            Intent i = new Intent(LibroInformacion.this, ListadoLibros.class);
+            startActivity(i);
         });
 
         cargarToolbar(this,tb);
@@ -134,7 +133,7 @@ public class LibroInformacion extends AppCompatActivity {
             @Override
             public void onSuccess(List<BookLending> lendings) {
                 for (BookLending bookLending : lendings) {
-                    if (bookLending.getUserId() == userId && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn())) {
+                    if (bookLending.getUserId() == userId && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn()) && bookLending.getReturnDate() == null) {
                         btnDevolver.setEnabled(true);
                         btnPrestar.setEnabled(false);
                         return;
