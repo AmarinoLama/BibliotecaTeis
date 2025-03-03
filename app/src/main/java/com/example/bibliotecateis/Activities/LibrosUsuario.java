@@ -44,6 +44,31 @@ public class LibrosUsuario extends AppCompatActivity {
         Helpers.inicializarQRLauncher(this, isbnEscaneado, result -> {
             isbnEscaneado[0] = result;
             System.out.println("QR Escaneado desde LibrosUsuario: " + isbnEscaneado[0]);
+
+            BookRepository bookRepository = new BookRepository();
+            bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
+                @Override
+                public void onSuccess(List<Book> books) {
+                    for (Book b : books) {
+                        if (b.getIsbn().equals(isbnEscaneado[0])) {
+                            Intent i = new Intent(LibrosUsuario.this, LibroInformacion.class);
+                            i.putExtra(LibroInformacion.BOOK_ID_EXTRA, b.getId());
+                            startActivity(i);
+                            return;
+                        }
+                    }
+                    Toast.makeText(LibrosUsuario.this,
+                            "No se encontró el libro con ISBN: " + isbnEscaneado[0],
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(LibrosUsuario.this,
+                            "Error al cargar los libros: " + t.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         });
         tb = findViewById(R.id.toolbar);
         Helpers.cargarToolbar(this, tb);
@@ -51,6 +76,7 @@ public class LibrosUsuario extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerLibrosUsuario);
         recyclerView.setLayoutManager(new LinearLayoutManager((this)));
         cargarBooks();
+
     }
 
     private void cargarAdapter(List<BookLending> userBooks) {
