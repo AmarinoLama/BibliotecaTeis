@@ -8,12 +8,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.models.BookLending;
 import com.example.bibliotecateis.API.repository.BookLendingRepository;
@@ -46,6 +48,7 @@ public class LibroInformacion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_libro_informacion);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -53,18 +56,44 @@ public class LibroInformacion extends AppCompatActivity {
         });
 
         inicializar();
+
         userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
         bookId = getIntent().getIntExtra(BOOK_ID_EXTRA, 0);
         cargarInfoLibro(bookId);
 
+        // Inicializamos el QR Launcher para poder escanear:
         Helpers.inicializarQRLauncher(this, isbnEscaneado, result -> {
             isbnEscaneado[0] = result;
             System.out.println("ISBN escaneado desde LibroInformacion: " + isbnEscaneado[0]);
-            // Si quiero meterle un método para usar el result ponerlo aquí
+
+            // Una vez tenemos el ISBN, buscamos el libro en la lista general:
+            BookRepository bookRepository = new BookRepository();
+            bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
+                @Override
+                public void onSuccess(List<Book> books) {
+                    for (Book book : books) {
+                        if (book.getIsbn().equals(isbnEscaneado[0])) {
+                            bookId = book.getId();
+                            System.out.println("Libro hallado con ISBN: " + book.getIsbn() + " => ID: " + book.getId());
+
+                            cargarInfoLibro(bookId);
+                            return;
+                        }
+                    }
+                    Toast.makeText(LibroInformacion.this, "No se encontró el libro con ISBN: " + isbnEscaneado[0],Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(LibroInformacion.this,
+                            "Error al buscar libros: " + t.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
+        // Listeners de botones:
         btnPrestar.setOnClickListener(v -> {
-            //Helpers.scanearQR();
             Helpers.prestarLibro(userId, bookId);
             Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
             i.putExtra(BOOK_ID_EXTRA,bookId);
@@ -102,51 +131,64 @@ public class LibroInformacion extends AppCompatActivity {
         btnVolver = findViewById(R.id.btnVolver);
     }
 
-    private void cargarInfoLibro(Integer id) {
+    public void cargarInfoLibro(Integer id) {
         BookRepository bookRepository = new BookRepository();
         bookRepository.getBookById(id, new BookRepository.ApiCallback<Book>() {
             @Override
             public void onSuccess(Book result) {
+                if (result == null) {
+                    Toast.makeText(LibroInformacion.this,"El repositorio devolvió null para el ID: " + id,Toast.LENGTH_LONG).show();
+                    return;
+                }
+                // Actualizamos la información en pantalla
                 tvTitulo.setText(result.getTitle());
                 tvIsbn.setText(result.getIsbn());
                 tvAutor.setText(result.getAuthor());
+
                 if (!result.getBookPicture().isEmpty()) {
                     Helpers.cargarImagen(result.getBookPicture(), ivPortada);
                 }
-                Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles);
-                Helpers.getNextDevolucion(result,tvProximoDisponible);
-                cargarBotones(result);
 
+                // Cargamos las existencias y disponibilidad
+                Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles);
+                Helpers.getNextDevolucion(result, tvProximoDisponible);
+
+                // Ajustamos visibilidad de botones (Prestar/Devolver) según estado
+                cargarBotones(result);
             }
 
             @Override
             public void onFailure(Throwable t) {
-                Toast.makeText(LibroInformacion.this, "Error al buscar el libro", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LibroInformacion.this,
+                        "Error al buscar el libro",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void cargarBotones(Book book) {
-
         BookLendingRepository bookLendingRepository = new BookLendingRepository();
         bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
             @Override
             public void onSuccess(List<BookLending> lendings) {
                 for (BookLending bookLending : lendings) {
-                    if (bookLending.getUserId() == userId && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn()) && bookLending.getReturnDate() == null) {
+                    if (bookLending.getUserId() == userId
+                            && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn())) {
+                        // Si el usuario tiene prestado este libro
                         btnDevolver.setEnabled(true);
                         btnPrestar.setEnabled(false);
                         return;
                     }
                 }
+                // Si no lo tiene prestado:
                 btnDevolver.setEnabled(false);
                 btnPrestar.setEnabled(true);
             }
+
             @Override
             public void onFailure(Throwable t) {
-                System.out.println("Error al buscar los prestamos");
+                System.out.println("Error al buscar los préstamos: " + t.getMessage());
             }
         });
     }
-
 }
