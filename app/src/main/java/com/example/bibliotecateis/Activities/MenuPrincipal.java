@@ -16,16 +16,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.Helpers;
+import com.example.bibliotecateis.Login.Login;
 import com.example.bibliotecateis.R;
+
+
 
 import java.util.List;
 
 public class MenuPrincipal extends AppCompatActivity {
-
+    public static String USER_ID = "userId";
+    public static String BOOK_ID_EXTRA = "bookId";
     private BookRepository bookRepository;
     private RecyclerView recyclerMenu;
     private Toolbar tb;
-
+    public int userId = 0;
+    public int bookId = 0;
     private String[] isbnEscaneado = new String[]{""};
 
     @Override
@@ -40,9 +45,35 @@ public class MenuPrincipal extends AppCompatActivity {
         cargarBooks();
 
         tb = findViewById(R.id.toolbar);
+
+        userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
+        bookId = getIntent().getIntExtra(BOOK_ID_EXTRA, 0);
         Helpers.inicializarQRLauncher(this, isbnEscaneado, result -> {
             isbnEscaneado[0] = result;
-            System.out.println("QR Escaneado desde MenuPrincipal: " + isbnEscaneado[0]);
+            System.out.println("ISBN escaneado desde MenuPrincipal: " + isbnEscaneado[0]);
+
+            BookRepository repo = new BookRepository();
+            repo.getBooks(new BookRepository.ApiCallback<List<Book>>() {
+                @Override
+                public void onSuccess(List<Book> books) {
+                    for (Book book : books) {
+                        if (book.getIsbn().equals(isbnEscaneado[0])) {
+                            Intent intent = new Intent(MenuPrincipal.this, LibroInformacion.class);
+                            intent.putExtra(LibroInformacion.BOOK_ID_EXTRA, book.getId());
+                            startActivity(intent);
+                            return;
+                        }
+                    }
+                    Toast.makeText(MenuPrincipal.this, "No se encontró el libro con ese ISBN", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(MenuPrincipal.this,
+                            "Error al buscar libros: " + t.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         });
         Helpers.cargarToolbar(this, tb);
     }

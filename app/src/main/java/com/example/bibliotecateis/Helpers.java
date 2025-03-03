@@ -22,6 +22,7 @@ import com.example.bibliotecateis.API.models.BookLending;
 import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.API.repository.ImageRepository;
+import com.example.bibliotecateis.Activities.LibroInformacion;
 import com.example.bibliotecateis.Activities.LibrosUsuario;
 import com.example.bibliotecateis.EditPreferences.EditPreferences;
 import com.example.bibliotecateis.Activities.ListadoLibros;
@@ -243,6 +244,18 @@ public class Helpers {
         });
     }
 
+
+    public static void isbnToView(AppCompatActivity context, String[] isbnEscaneado) {
+        if (isbnEscaneado[0] == null || isbnEscaneado[0].isEmpty()) {
+            Toast.makeText(context, "No se ha encontrado un isbn valido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(context, LibroInformacion.class);
+        intent.putExtra("SCANNED_ISBN", isbnEscaneado[0]);
+        context.startActivity(intent);
+    }
+
+
     public static void prestarLibro(int userId, int bookId) {
         bookLendingRepository.lendBook(userId, bookId, new BookRepository.ApiCallback<Boolean>() {
             @Override
@@ -280,4 +293,7 @@ public class Helpers {
         }
         return books;
     }
+
+
+
 }
