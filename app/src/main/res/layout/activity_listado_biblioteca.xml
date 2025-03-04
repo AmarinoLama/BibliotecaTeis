@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/background_light">
+    android:background="@color/background">
 
 
     <androidx.appcompat.widget.Toolbar
@@ -14,7 +14,7 @@
             app:title="Libros"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/menu"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
@@ -62,6 +62,7 @@
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:text="Filtrar Autor"
+            android:backgroundTint="@color/button"
             android:textColor="@android:color/white" />
 
         <Button
@@ -70,6 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Filtrar Título"
+            android:backgroundTint="@color/button"
             android:textColor="@android:color/white" />
 
         <Button
@@ -77,6 +79,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:backgroundTint="@color/button"
             android:text="Eliminar Filtro" />
     </LinearLayout>
 
