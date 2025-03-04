@@ -173,7 +173,7 @@ public class LibroInformacion extends AppCompatActivity {
             public void onSuccess(List<BookLending> lendings) {
                 for (BookLending bookLending : lendings) {
                     if (bookLending.getUserId() == userId
-                            && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn())) {
+                            && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn()) && bookLending.getReturnDate() == null) {
                         // Si el usuario tiene prestado este libro
                         btnDevolver.setEnabled(true);
                         btnPrestar.setEnabled(false);

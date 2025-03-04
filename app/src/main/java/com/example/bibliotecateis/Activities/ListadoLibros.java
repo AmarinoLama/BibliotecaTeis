@@ -30,7 +30,7 @@ public class ListadoLibros extends AppCompatActivity {
 
     private BookRepository bookRepository;
     private RecyclerView recyclerViewLibros;
-    private Button btnBuscarAutor, btnBuscarTitulo;
+    private Button btnBuscarAutor, btnBuscarTitulo,btnEliminarFiltro;
     private EditText etBuscar;
     private Toolbar tb;
 
@@ -47,6 +47,7 @@ public class ListadoLibros extends AppCompatActivity {
         etBuscar         = findViewById(R.id.etBuscar);
         recyclerViewLibros = findViewById(R.id.recyclerViewLibros);
         recyclerViewLibros.setLayoutManager(new LinearLayoutManager(this));
+        btnEliminarFiltro = findViewById(R.id.btnEliminarFiltro);
 
         // Llamamos para cargar los libros inicialmente
         cargarBooks();
@@ -76,6 +77,11 @@ public class ListadoLibros extends AppCompatActivity {
                     Toast.makeText(ListadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
                 }
             });
+        });
+
+        btnEliminarFiltro.setOnClickListener((view) -> {
+            cargarBooks();
+            etBuscar.setText("");
         });
 
         tb = findViewById(R.id.toolbar);
