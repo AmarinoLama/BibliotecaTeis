@@ -144,23 +144,30 @@ public class Helpers {
         return librosSinRepetir;
     }
 
-
+    // Funcion que devuelve una lista de libros aleatorios en función de la cantidad especificada para mostrar en el menú.
     public static List<Book> getLibrosRandom(List<Book> libros, int cantidad) {
         List<Book> librosRandom = new ArrayList<>();
         Random random = new Random();
 
+        // Se asegura de que no haya libros con el mismo ISBN,
+        // ya que pueden existir diferentes libros con el mismo ISBN pero con distintos identificadores.
         for (int i = 0; i < cantidad; ) {
+            // Generamos un numero aleatorio dentro del rango de la lista
             int index = random.nextInt(libros.size());
+            // Accedemos al libro en la posición generada
             Book libroSeleccionado = libros.get(index);
 
+            // Verificamos si el ISBN del libro ya está presente en la lista de libros aleatorios
             boolean libroRepetido = false;
             for (Book libro : librosRandom) {
                 if (libro.getIsbn().equals(libroSeleccionado.getIsbn())) {
+                    // Si ya existe un libro con el mismo ISBN, lo marcamos como repetido,y rompemos el bucle para continuar filtrando
                     libroRepetido = true;
                     break;
                 }
             }
 
+            // Si el libro en esa posicion random no está repetido, se agrega a la lista y se incrementa el contador para pasar al siguiente
             if (!libroRepetido) {
                 librosRandom.add(libroSeleccionado);
                 i++;
@@ -169,6 +176,7 @@ public class Helpers {
 
         return librosRandom;
     }
+
 
     // Función que se encarga de obtener la fecha de devolución del libro
 
