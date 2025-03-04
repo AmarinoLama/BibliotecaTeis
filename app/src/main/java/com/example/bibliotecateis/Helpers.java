@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.Random;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -143,14 +144,29 @@ public class Helpers {
         return librosSinRepetir;
     }
 
-    // Función que se encarga de dar libros aleatorios para mostrar en el menú principal
 
-    public static List<Book> getLibrosRandom(List<Book> libros,int cantidad){
+    public static List<Book> getLibrosRandom(List<Book> libros, int cantidad) {
         List<Book> librosRandom = new ArrayList<>();
-        for (int i = 0; i < cantidad; i++) {
-            int random = (int) (Math.random() * libros.size());
-            librosRandom.add(libros.get(random));
+        Random random = new Random();
+
+        for (int i = 0; i < cantidad; ) {
+            int index = random.nextInt(libros.size());
+            Book libroSeleccionado = libros.get(index);
+
+            boolean libroRepetido = false;
+            for (Book libro : librosRandom) {
+                if (libro.getIsbn().equals(libroSeleccionado.getIsbn())) {
+                    libroRepetido = true;
+                    break;
+                }
+            }
+
+            if (!libroRepetido) {
+                librosRandom.add(libroSeleccionado);
+                i++;
+            }
         }
+
         return librosRandom;
     }
 
