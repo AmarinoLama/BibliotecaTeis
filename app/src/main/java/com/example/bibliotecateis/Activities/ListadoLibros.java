@@ -163,7 +163,7 @@ public class ListadoLibros extends AppCompatActivity {
                 myvh.txt2.setText(book.getAuthor());
 
                 // Existencias
-                Helpers.obtenerExistencias(book, myvh.txt_existencias, myvh.txt_disponibles);
+                Helpers.obtenerExistencias(book, myvh.txt_existencias, myvh.txt_disponibles,null);
 
                 // Botón que abre la info detallada
                 myvh.btn1.setOnClickListener((view) -> {

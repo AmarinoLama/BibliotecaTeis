@@ -23,6 +23,8 @@ import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.Helpers;
 import com.example.bibliotecateis.Login.Login;
 import com.example.bibliotecateis.R;
+
+import java.util.Comparator;
 import java.util.List;
 
 public class LibrosUsuario extends AppCompatActivity {
@@ -157,7 +159,7 @@ public class LibrosUsuario extends AppCompatActivity {
 
                 myvh.getTxtAutor().setText(book.getAuthor());
                 myvh.getTxtIsbn().setText(book.getIsbn());
-                Helpers.getNextDevolucion(book, myvh.getTxtFechaDevolucion());
+                Helpers.getNextDevolucionUsuario(book, userId, myvh.getTxtFechaDevolucion());
             }
 
             @Override
@@ -171,6 +173,9 @@ public class LibrosUsuario extends AppCompatActivity {
         bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
             @Override
             public void onSuccess(List<BookLending> result) {
+                result = result.stream()
+                        .filter(b -> b.getUserId() == userId && b.getReturnDate() == null) // cojo solo los libros del usuario que no hayan sido devueltos
+                        .sorted(Comparator.comparing(BookLending::getLendDate)).toList();
                 cargarAdapter(result);
             }
 

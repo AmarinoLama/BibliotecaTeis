@@ -7,12 +7,14 @@ import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuProvider;
@@ -62,7 +64,7 @@ public class Helpers {
         });
     }
 
-    public static void obtenerExistencias(Book book, TextView existencias, TextView disponibles) {
+    public static void obtenerExistencias(Book book, TextView existencias, TextView disponibles, @Nullable Object[] lista) {
         BookRepository bookRepository = new BookRepository();
         bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
             @Override
@@ -77,12 +79,46 @@ public class Helpers {
                 }
                 existencias.setText(String.valueOf(existenciasTotal));
                 disponibles.setText(String.valueOf(existenciasDisponibles));
+                if (lista != null) {
+                    cargarBotones(book, (Button) lista[0], (Button) lista[1], (int) lista[2], existenciasDisponibles);
+                }
+
+
             }
             @Override
             public void onFailure(Throwable t) {
                 Toast.makeText(existencias.getContext(), "Error al obtener las existencias", Toast.LENGTH_SHORT).show();
                 existencias.setText("Error");
                 disponibles.setText("Error");
+            }
+        });
+    }
+
+    private static void cargarBotones(Book book, Button btnPrestar, Button btnDevolver, int userId, int existenciasDisponibles) {
+
+
+
+        BookLendingRepository bookLendingRepository = new BookLendingRepository();
+        bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
+            @Override
+            public void onSuccess(List<BookLending> lendings) {
+                for (BookLending bookLending : lendings) {
+                    if (bookLending.getUserId() == userId
+                            && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn()) && bookLending.getReturnDate() == null) {
+                        // Si el usuario tiene prestado este libro
+                        btnDevolver.setEnabled(true);
+                        btnPrestar.setEnabled(false);
+                        return;
+                    }
+                }
+                // Si no lo tiene prestado:
+                btnDevolver.setEnabled(false);
+                btnPrestar.setEnabled(existenciasDisponibles > 0);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                System.out.println("Error al buscar los préstamos: " + t.getMessage());
             }
         });
     }
@@ -228,6 +264,33 @@ public class Helpers {
         } else {
             System.out.println("QR Launcher no inicializado");
         }
+    }
+
+    public static void getNextDevolucionUsuario(Book book, int userId, TextView txtFechaDevolucion) {
+        StringBuilder mensaje = new StringBuilder();
+        BookLendingRepository bookLendingRepository = new BookLendingRepository();
+        bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
+            @Override
+            public void onSuccess(List<BookLending> result) {
+                String ultimaFecha = "";
+                for (BookLending bookLending : result) {
+                    if (bookLending.getBook().getIsbn().equals(book.getIsbn()) && bookLending.getReturnDate() == null && bookLending.getUserId() == userId) {
+                        ultimaFecha = bookLending.getLendDate();
+                    }
+                }
+                String fechaDevolucion = sumarDias(ultimaFecha,15);
+                if(compararFechas(fechaDevolucion, String.valueOf(LocalDateTime.now()).substring(0,19)).equals(ultimaFecha)){
+                    txtFechaDevolucion.setTextColor(Color.RED);
+                }
+                fechaDevolucion = fechaDevolucion.substring(0,fechaDevolucion.indexOf('T'));
+                txtFechaDevolucion.setText("(" + fechaDevolucion + ")");
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                mensaje.append("Error al buscar las devoluciones");
+            }
+        });
     }
 
     public interface QRCallback {

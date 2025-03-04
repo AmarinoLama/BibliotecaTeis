@@ -80,7 +80,7 @@ public class LibroInformacion extends AppCompatActivity {
                             return;
                         }
                     }
-                    Toast.makeText(LibroInformacion.this, "No se encontró el libro con ISBN: " + isbnEscaneado[0],Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LibroInformacion.this, "No se encontró el libro con ISBN: " + isbnEscaneado[0], Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -96,14 +96,14 @@ public class LibroInformacion extends AppCompatActivity {
         btnPrestar.setOnClickListener(v -> {
             Helpers.prestarLibro(userId, bookId);
             Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
-            i.putExtra(BOOK_ID_EXTRA,bookId);
+            i.putExtra(BOOK_ID_EXTRA, bookId);
             startActivity(i);
         });
 
         btnDevolver.setOnClickListener(v -> {
             Helpers.devolverLibro(bookId);
             Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
-            i.putExtra(BOOK_ID_EXTRA,bookId);
+            i.putExtra(BOOK_ID_EXTRA, bookId);
             startActivity(i);
         });
 
@@ -112,7 +112,7 @@ public class LibroInformacion extends AppCompatActivity {
             startActivity(i);
         });
 
-        cargarToolbar(this,tb);
+        cargarToolbar(this, tb);
 
         //cargarBotones();
     }
@@ -137,7 +137,7 @@ public class LibroInformacion extends AppCompatActivity {
             @Override
             public void onSuccess(Book result) {
                 if (result == null) {
-                    Toast.makeText(LibroInformacion.this,"El repositorio devolvió null para el ID: " + id,Toast.LENGTH_LONG).show();
+                    Toast.makeText(LibroInformacion.this, "El repositorio devolvió null para el ID: " + id, Toast.LENGTH_LONG).show();
                     return;
                 }
                 // Actualizamos la información en pantalla
@@ -150,11 +150,12 @@ public class LibroInformacion extends AppCompatActivity {
                 }
 
                 // Cargamos las existencias y disponibilidad
-                Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles);
                 Helpers.getNextDevolucion(result, tvProximoDisponible);
+                Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles, new Object[]{btnPrestar,btnDevolver,userId});
+
+
 
                 // Ajustamos visibilidad de botones (Prestar/Devolver) según estado
-                cargarBotones(result);
             }
 
             @Override
@@ -165,30 +166,5 @@ public class LibroInformacion extends AppCompatActivity {
             }
         });
     }
-
-    private void cargarBotones(Book book) {
-        BookLendingRepository bookLendingRepository = new BookLendingRepository();
-        bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
-            @Override
-            public void onSuccess(List<BookLending> lendings) {
-                for (BookLending bookLending : lendings) {
-                    if (bookLending.getUserId() == userId
-                            && Objects.equals(bookLending.getBook().getIsbn(), book.getIsbn()) && bookLending.getReturnDate() == null) {
-                        // Si el usuario tiene prestado este libro
-                        btnDevolver.setEnabled(true);
-                        btnPrestar.setEnabled(false);
-                        return;
-                    }
-                }
-                // Si no lo tiene prestado:
-                btnDevolver.setEnabled(false);
-                btnPrestar.setEnabled(true);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                System.out.println("Error al buscar los préstamos: " + t.getMessage());
-            }
-        });
-    }
 }
+
