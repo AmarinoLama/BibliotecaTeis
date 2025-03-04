@@ -17,8 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.models.BookLending;
+import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
+import com.example.bibliotecateis.API.repository.UserRepository;
 import com.example.bibliotecateis.Helpers;
 import com.example.bibliotecateis.Login.Login;
 import com.example.bibliotecateis.R;
@@ -29,6 +31,7 @@ public class LibrosUsuario extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private Toolbar tb;
+    private TextView txtNombreUsuario, txtEmailUsuario, txtDateUsuario;
 
     // Variable que se consigue con el shared preferences
     private int userId = 0;
@@ -86,6 +89,33 @@ public class LibrosUsuario extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerLibrosUsuario);
         recyclerView.setLayoutManager(new LinearLayoutManager((this)));
         cargarBooks();
+
+        txtNombreUsuario = findViewById(R.id.txtNombreUsuario);
+        txtEmailUsuario = findViewById(R.id.txtEmailUsuario);
+        txtDateUsuario = findViewById(R.id.txtDateUsuario);
+
+        cargarDatosUsuario();
+    }
+
+    private void cargarDatosUsuario() {
+        UserRepository userRepository = new UserRepository();
+        userRepository.getUserById(userId, new BookRepository.ApiCallback<User>() {
+            @Override
+            public void onSuccess(User result) {
+                txtNombreUsuario.setText(result.getName());
+                txtEmailUsuario.setText(result.getEmail());
+                String dateJoined = result.getDateJoined();
+                txtDateUsuario.setText(dateJoined.substring(0,result.getDateJoined().indexOf("T")));
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                txtNombreUsuario.setText("No se ha podido cargar el usuario");
+                txtEmailUsuario.setText("No se ha podido cargar el usuario");
+                txtDateUsuario.setText("No se ha podido cargar el usuario");
+
+            }
+        });
     }
 
     // Método que carga el adapter con los libros del usuario, esto se encarga de mostrar todos las existencias de libros que tiene el usuario, con un fragment individual para cada libro
