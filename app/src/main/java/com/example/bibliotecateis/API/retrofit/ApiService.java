@@ -1,8 +1,10 @@
-package com.example.appbiblioteis.API.retrofit;
+package com.example.bibliotecateis.API.retrofit;
 
-import com.example.appbiblioteis.API.models.Book;
-import com.example.appbiblioteis.API.models.BookLending;
-import com.example.appbiblioteis.API.models.User;
+import com.example.bibliotecateis.API.models.BookLending;
+import com.example.bibliotecateis.API.models.User;
+
+
+import com.example.bibliotecateis.API.models.Book;
 
 import java.util.List;
 
@@ -52,7 +54,7 @@ public interface ApiService {
     Call<BookLending> getLending(@Path("id") int id);
 
     @POST("booklending")
-    Call<BookLending> lendBook(@Body BookLending lending);
+    Call<BookLending> lendBook(@Query("userId") Integer userid, @Query("bookId") Integer bookid);
 
     @PUT("booklending/{id}/return")
     Call<Void> returnBook(@Path("id") int id);

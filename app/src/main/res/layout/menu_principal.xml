@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:padding="16dp">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/menu"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Biblioteca IES de Teis" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:paddingTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <TextView
+            android:id="@+id/TextoTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:text="Bienvenido a la Biblioteca del IES de Teis. Aquí encontrarás una amplia selección de libros para el estudio, la investigación y el entretenimiento."/>
+
+        <TextView
+            android:id="@+id/textoMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp"
+            android:text="DESCUBRE NUESTRAS RECOMENDACIONES"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp" />
+
+        <TextView
+            android:id="@+id/textoInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Pulsa en las imágenes para acceder a más detalles sobre los libros."/>
+
+        <TextView
+            android:id="@+id/textoTituloChistes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:text="CHISTES DE LA SEMANA 😏"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/textoNuevo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="¿Por qué los programadores prefieren la oscuridad? Porque la luz atrae los bugs.\n\nSi los ordenadores fueran humanos, ¿cómo se llamarían los errores? - \Ubuntu\.\n\n¿Qué le dice un bit al otro? - Si yo cambio, tú cambias.\n\n¿Cuál es el lenguaje favorito de los robots? - El binario, porque sólo entienden dos cosas.\n\n¿Qué le dice un servidor a otro? - ¿Te caes o qué?\n\n¿Por qué los programadores no usan gafas? Porque pueden C#.\n\n¿Cómo se despiden los cables USB? - Hasta el próximo conector."/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

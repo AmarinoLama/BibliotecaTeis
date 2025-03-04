@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/btnMenuIrA"
+        android:icon="@drawable/icono_lupa"
+        android:title="Menu Principal"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/btnMenuListadoLibros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Libros"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/btnMenuMenuPrincipal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Menu Principal"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/btnMenuCamara"
+        android:icon="@drawable/icono_camara"
+        android:title="Camara"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/btnMenuLogin"
+        android:icon="@drawable/icono_login"
+        android:title="Login"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/btnMenuVolverLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Volver al Log In"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/btnMenuIrPerfilUsuario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Perfil De Usuario"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/btnMenuPreferencias"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Ir a las Preferencias"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+</menu>

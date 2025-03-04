@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".Activities.LibrosUsuario">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/menu"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Info Usuario" />
+
+    <TextView
+        android:id="@+id/txtInfoUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Informacion Del Usuario: "
+        android:textStyle="bold"
+        android:textSize="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:layout_editor_absoluteX="0dp" />
+    <TextView
+        android:id="@+id/lblNombreUsuario"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre: "
+        app:layout_constraintTop_toBottomOf="@+id/txtInfoUsuario"
+        tools:layout_editor_absoluteX="0dp" />
+    <TextView
+        android:id="@+id/txtNombreUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/lblNombreUsuario"
+        tools:layout_editor_absoluteX="0dp" />
+    <TextView
+        android:id="@+id/lblEmailUsuario"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email: "
+        app:layout_constraintTop_toBottomOf="@+id/txtNombreUsuario"
+        tools:layout_editor_absoluteX="0dp" />
+    <TextView
+        android:id="@+id/txtEmailUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/lblEmailUsuario"
+        tools:layout_editor_absoluteX="0dp" />
+    <TextView
+        android:id="@+id/lblDateUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Fecha de registro: "
+        app:layout_constraintTop_toBottomOf="@+id/txtEmailUsuario"
+        tools:layout_editor_absoluteX="0dp" />
+    <TextView
+        android:id="@+id/txtDateUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/lblDateUsuario"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Libros en posesión: "
+        android:textStyle="bold"
+        android:textSize="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtDateUsuario"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerLibrosUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="729dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:layout_editor_absoluteX="0dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

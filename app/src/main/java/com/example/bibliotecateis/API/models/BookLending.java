@@ -1,24 +1,24 @@
-package com.example.appbiblioteis.API.models;
+package com.example.bibliotecateis.API.models;
 
 public class BookLending {
-    private int id;
+
+    // Se han añadido los atributos returnDate, book y user para simplificarnos el manejo de tareas en la aplicación
+
     private int bookId;
     private int userId;
     private String lendDate;
     private String returnDate;
-
-    private User user;
     private Book book;
+    private User user;
 
     // Getters & Setters
 
-
-    public int getId() {
-        return id;
+    public String getReturnDate() {
+        return returnDate;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
     }
 
     public int getBookId() {
@@ -45,11 +45,19 @@ public class BookLending {
         this.lendDate = lendDate;
     }
 
-    public String getReturnDate() {
-        return returnDate;
+    public Book getBook() {
+        return book;
     }
 
-    public void setReturnDate(String returnDate) {
-        this.returnDate = returnDate;
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

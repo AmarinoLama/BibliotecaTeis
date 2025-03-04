@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="menu">#0066FF</color>
+    <color name="background">#aed6f1</color>
+    <color name="button">#0066FF</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#FF808080</color>
+    <color name="dark_gray">#FF444444</color>
+    <color name="light_gray">#FF888888</color>
+    <color name="accent">#FF33B5E5</color>
+    <color name="primary">#FFAA66CC</color>
+    <color name="primary_dark">#FF9933CC</color>
+    <color name="primary_light">#FFABABAB</color>
+    <color name="background_light">#FF505050</color>
+    <color name="background_dark">#FF101010</color>
+    <color name="transparent">#00000000</color>
+    <color name="text">#FF000000</color>
+    <color name="text_light">#FFFFFFFF</color>
+    <color name="text_dark">#FF000000</color>
+    <color name="text_highlight">#FF33B5E5</color>
+    <color name="text_highlight_light">#FF33B5E5</color>
+    <color name="text_highlight_dark">#FF33B5E5</color>
+    <color name="text_disabled">#FF888888</color>
+    <color name="text_hint">#FFABABAB</color>
+    <color name="text_link">#FF0000FF</color>
+    <color name="text_light_link">#FF33B5E5</color>
+    <color name="text_dark_link">#FF669900</color>
+    <color name="text_error">#FFFF4444</color>
 </resources>
