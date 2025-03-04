@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
@@ -19,12 +19,13 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Menu Principal" />
+        app:title="Biblioteca IES de Teis" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:orientation="vertical"
+        android:paddingTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
-            android:text="Aqui vamos a meter texto de relleno sobre la biblioteca o yo que carallo
-         se aaaaaaaaaaaaaaa es solo pa ver como queda esto asi con texto" />
+            android:text="Bienvenido a la Biblioteca del IES de Teis. Aquí encontrarás una amplia selección de libros para el estudio, la investigación y el entretenimiento."/>
 
         <TextView
             android:id="@+id/textoMenu"
@@ -46,8 +46,10 @@
             android:paddingLeft="5dp"
             android:paddingTop="10dp"
             android:paddingRight="5dp"
-            android:text="LIBROS RECOMENDADOS"
-            android:textAlignment="center" />
+            android:text="DESCUBRE NUESTRAS RECOMENDACIONES"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerMenu"
@@ -56,13 +58,28 @@
             android:layout_marginVertical="8dp" />
 
         <TextView
+            android:id="@+id/textoInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Pulsa en las imágenes para acceder a más detalles sobre los libros."/>
+
+        <TextView
+            android:id="@+id/textoTituloChistes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:text="CHISTES DE LA SEMANA 😏"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <TextView
             android:id="@+id/textoNuevo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Texto informativo para poner en el menu principal para
-            imaginar que hubiera mucho texto por ejemplo esto
-             que se esta comiendo la lista de la derecha" />
+            android:text="¿Por qué los programadores prefieren la oscuridad? Porque la luz atrae los bugs.\n\nSi los ordenadores fueran humanos, ¿cómo se llamarían los errores? - \Ubuntu\.\n\n¿Qué le dice un bit al otro? - Si yo cambio, tú cambias.\n\n¿Cuál es el lenguaje favorito de los robots? - El binario, porque sólo entienden dos cosas.\n\n¿Qué le dice un servidor a otro? - ¿Te caes o qué?\n\n¿Por qué los programadores no usan gafas? Porque pueden C#.\n\n¿Cómo se despiden los cables USB? - Hasta el próximo conector."/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
