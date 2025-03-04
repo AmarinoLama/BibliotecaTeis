@@ -1,6 +1,7 @@
 package com.example.bibliotecateis.Activities;
 
 import static com.example.bibliotecateis.Activities.LibroInformacion.USER_ID;
+
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
@@ -12,14 +13,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.models.BookLending;
+import com.example.bibliotecateis.API.models.User;
 import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
+import com.example.bibliotecateis.API.repository.UserRepository;
 import com.example.bibliotecateis.Helpers;
 import com.example.bibliotecateis.Login.Login;
 import com.example.bibliotecateis.R;
@@ -31,6 +36,7 @@ public class LibrosUsuario extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private Toolbar tb;
+    private TextView txtNombreUsuario, txtEmailUsuario, txtDateUsuario;
 
     private BookLendingRepository bookLendingRepository = new BookLendingRepository();
     private int userId = 0;
@@ -79,6 +85,32 @@ public class LibrosUsuario extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager((this)));
         cargarBooks();
 
+        txtNombreUsuario = findViewById(R.id.txtNombreUsuario);
+        txtEmailUsuario = findViewById(R.id.txtEmailUsuario);
+        txtDateUsuario = findViewById(R.id.txtDateUsuario);
+
+        cargarDatosUsuario();
+    }
+
+    private void cargarDatosUsuario() {
+        UserRepository userRepository = new UserRepository();
+        userRepository.getUserById(userId, new BookRepository.ApiCallback<User>() {
+            @Override
+            public void onSuccess(User result) {
+                txtNombreUsuario.setText(result.getName());
+                txtEmailUsuario.setText(result.getEmail());
+                String dateJoined = result.getDateJoined();
+                txtDateUsuario.setText(dateJoined.substring(0,result.getDateJoined().indexOf("T")));
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                txtNombreUsuario.setText("No se ha podido cargar el usuario");
+                txtEmailUsuario.setText("No se ha podido cargar el usuario");
+                txtDateUsuario.setText("No se ha podido cargar el usuario");
+
+            }
+        });
     }
 
     private void cargarAdapter(List<BookLending> userBooks) {
