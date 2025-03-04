@@ -17,12 +17,13 @@ import com.example.bibliotecateis.API.repository.UserRepository;
 import com.example.bibliotecateis.Activities.LibroInformacion;
 import com.example.bibliotecateis.Activities.MenuPrincipal;
 import com.example.bibliotecateis.R;
-
 import java.util.List;
+
+// Clase que se encarga de toda la gestión de la pantalla de inicio de sesión
 
 public class Login extends AppCompatActivity {
 
-    public static String SHARED_PREFERENCES = "sharedPreferences";
+    public static final String SHARED_PREFERENCES = "sharedPreferences";
 
     private Button btnLogin;
     private EditText etContrasena, etUsuario;
@@ -55,6 +56,8 @@ public class Login extends AppCompatActivity {
         etUsuario = findViewById(R.id.etUsuario);
     }
 
+    // Función que se encarga de gestionar la lógica para el inicio de sesión
+
     private void inicioSesion(String usuario, String password) {
 
         userRepository = new UserRepository();
@@ -62,14 +65,24 @@ public class Login extends AppCompatActivity {
             @Override
             public void onSuccess(List<User> result) {
                 for(User user : result) {
+
+                    // Si el usuario y el email coinciden con los datos de la base de datos, se inicia sesión
+
                     if(user.getEmail().equals(usuario) && user.getPasswordHash().equals(password)) {
+
+                        // Antes usábamos el userViewModel para actualizar el usuario, pero ahora como no nos funcionaba y aprendimos a usar las preferencias compartidas, lo hemos comentado y sustituido por el código de abajo
+
                         /*userViewModel = new ViewModelProvider(Login.this).get(UserViewModel.class);
                         userViewModel.actualizarUser(user);*/
+
+                        // Una vez iniciada la sesión, se guarda el id del usuario en las preferencias compartidas
 
                         SharedPreferences sp = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putInt(LibroInformacion.USER_ID, user.getId());
                         editor.apply();
+
+                        // Sale un toast con el mensaje de sesión iniciada y carga el menú principal
 
                         Toast.makeText(Login.this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, MenuPrincipal.class);
@@ -77,6 +90,9 @@ public class Login extends AppCompatActivity {
                         return;
                     }
                 }
+
+                // En caso de que las credenciales sean incorrectas se devolverá un mensaje informativo
+
                 Toast.makeText(Login.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
             }
 

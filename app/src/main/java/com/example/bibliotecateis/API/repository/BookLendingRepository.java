@@ -34,6 +34,8 @@ public class BookLendingRepository {
         });
     }
 
+    // Se ha modificado este método porque por algún motivo no funcionaba de la otra forma y como algunos de nuestros compañeros lo tenían así, hemos decidido cambiarlo
+
     public void lendBook(int userId, int bookId, final BookRepository.ApiCallback<Boolean> callback) {
         apiService.lendBook(userId, bookId).enqueue(new Callback<BookLending>() {
             @Override

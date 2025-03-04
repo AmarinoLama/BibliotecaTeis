@@ -1,11 +1,7 @@
-package com.example.bibliotecateis.EditPreferences;
-
-import static com.example.bibliotecateis.Helpers.cargarToolbar;
+package com.example.bibliotecateis.Fragments;
 
 import android.os.Bundle;
-
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.bibliotecateis.R;

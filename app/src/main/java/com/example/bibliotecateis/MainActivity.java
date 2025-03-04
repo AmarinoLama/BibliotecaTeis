@@ -17,31 +17,8 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        abrirLogin();
-
-        //abrirListadoLibros();
-
-        //abrirLibroInformacion();
-
-    }
-
-    private void abrirLogin() {
         Intent intent = new Intent(MainActivity.this, Login.class);
         startActivity(intent);
-    }
 
-    private void abrirListadoLibros() {
-        Intent intent = new Intent(MainActivity.this, ListadoLibros.class);
-        startActivity(intent);
-    }
-
-    private void abrirLibroInformacion() {
-        Intent intent = new Intent(MainActivity.this, LibroInformacion.class);
-        startActivity(intent);
-    }
-
-    private void abrirMenuPrincipal() {
-        Intent intent = new Intent(MainActivity.this, MenuPrincipal.class);
-        startActivity(intent);
     }
 }

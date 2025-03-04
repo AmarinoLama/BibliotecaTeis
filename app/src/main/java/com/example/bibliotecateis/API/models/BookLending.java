@@ -2,6 +2,8 @@ package com.example.bibliotecateis.API.models;
 
 public class BookLending {
 
+    // Se han añadido los atributos returnDate, book y user para simplificarnos el manejo de tareas en la aplicación
+
     private int bookId;
     private int userId;
     private String lendDate;

@@ -1,45 +1,42 @@
 package com.example.bibliotecateis.Activities;
 
 import static com.example.bibliotecateis.Helpers.cargarToolbar;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.example.bibliotecateis.API.models.Book;
-import com.example.bibliotecateis.API.models.BookLending;
-import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.Helpers;
 import com.example.bibliotecateis.Login.Login;
 import com.example.bibliotecateis.R;
-
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+
+// Clase que muestra la información de un libro en particular
 
 public class LibroInformacion extends AppCompatActivity {
 
-    public static String USER_ID = "userId";
-    public static String BOOK_ID_EXTRA = "bookId";
+    // Constantes para el manejo de SharedPreferences
+    public static final String USER_ID = "userId";
+    public static final String BOOK_ID_EXTRA = "bookId";
 
     private TextView tvTitulo, tvIsbn, tvAutor, tvLibrosDisponibles, tvProximoDisponible, tvLibrosExistentes;
     private ImageView ivPortada;
     private Button btnPrestar, btnDevolver, btnVolver;
     private Toolbar tb;
 
+    // Variable donde se almacena el resultado de lo escaneado en el QR
     private String[] isbnEscaneado = new String[]{""};
 
+    // Variables para almacenar los ids del libro y del usuario
     public int userId = 0;
     public int bookId = 0;
 
@@ -57,12 +54,18 @@ public class LibroInformacion extends AppCompatActivity {
 
         inicializar();
 
+        // Obtenemos el ID del usuario y del libro mediante los shared preferences y el intent para pasar información entre clases
         userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
         bookId = getIntent().getIntExtra(BOOK_ID_EXTRA, 0);
+
+        // Cargamos la información del libro a partir de la id de este
         cargarInfoLibro(bookId);
 
         // Inicializamos el QR Launcher para poder escanear:
         Helpers.inicializarQRLauncher(this, isbnEscaneado, result -> {
+
+            // Como mencioné en la clase Helpers este método es como un listener el cual puedes añadirle acciones cuando lea el QR
+
             isbnEscaneado[0] = result;
             System.out.println("ISBN escaneado desde LibroInformacion: " + isbnEscaneado[0]);
 
@@ -92,7 +95,7 @@ public class LibroInformacion extends AppCompatActivity {
             });
         });
 
-        // Listeners de botones:
+        // Listener del botón prestar que llama al método prestarLibro de la clase Helpers y recarga la página para actualizar los valores
         btnPrestar.setOnClickListener(v -> {
             Helpers.prestarLibro(userId, bookId);
             Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
@@ -100,6 +103,7 @@ public class LibroInformacion extends AppCompatActivity {
             startActivity(i);
         });
 
+        // Listener del botón devolver que llama al método devolverLibro de la clase Helpers y recarga la página para actualizar los valores
         btnDevolver.setOnClickListener(v -> {
             Helpers.devolverLibro(bookId);
             Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
@@ -107,14 +111,14 @@ public class LibroInformacion extends AppCompatActivity {
             startActivity(i);
         });
 
+        // Listener del botón volver que nos lleva a la pantalla de listado de libros
         btnVolver.setOnClickListener(v -> {
             Intent i = new Intent(LibroInformacion.this, ListadoLibros.class);
             startActivity(i);
         });
 
+        // Cargamos el toolbar
         cargarToolbar(this, tb);
-
-        //cargarBotones();
     }
 
     private void inicializar() {
@@ -131,11 +135,15 @@ public class LibroInformacion extends AppCompatActivity {
         btnVolver = findViewById(R.id.btnVolver);
     }
 
+    // Función que se encarga de cargar toda la información del libro a partir de su id
+
     public void cargarInfoLibro(Integer id) {
         BookRepository bookRepository = new BookRepository();
+        // Se usa el método de getBookById para obtener la información del libro
         bookRepository.getBookById(id, new BookRepository.ApiCallback<Book>() {
             @Override
             public void onSuccess(Book result) {
+                // Control de errores por si no se encuentra el libro
                 if (result == null) {
                     Toast.makeText(LibroInformacion.this, "El repositorio devolvió null para el ID: " + id, Toast.LENGTH_LONG).show();
                     return;
@@ -145,6 +153,7 @@ public class LibroInformacion extends AppCompatActivity {
                 tvIsbn.setText(result.getIsbn());
                 tvAutor.setText(result.getAuthor());
 
+                // Cargamos la imagen de la portada en el caso de que no se encuentre vacía
                 if (!result.getBookPicture().isEmpty()) {
                     Helpers.cargarImagen(result.getBookPicture(), ivPortada);
                 }
@@ -153,9 +162,7 @@ public class LibroInformacion extends AppCompatActivity {
                 Helpers.getNextDevolucion(result, tvProximoDisponible);
                 Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles, new Object[]{btnPrestar,btnDevolver,userId});
 
-
-
-                // Ajustamos visibilidad de botones (Prestar/Devolver) según estado
+                // El método de obtenerExistencias se encarga de cargar la información de los libros existentes y disponibles y de habilitar o deshabilitar los botones de prestar y devolver, se han juntado estas acciones en el mismo método, ya que la información de los libros disponibles o no se necesita para cargar los botones
             }
 
             @Override
@@ -167,4 +174,3 @@ public class LibroInformacion extends AppCompatActivity {
         });
     }
 }
-

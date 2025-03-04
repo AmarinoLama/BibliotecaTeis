@@ -45,7 +45,7 @@ public class Helpers {
     private static ActivityResultLauncher<ScanOptions> qrLauncher;
     private static BookLendingRepository bookLendingRepository = new BookLendingRepository();
 
-    // ESTA CLASE ME DIJO EL PROFE QUE LA CREE, NO TE ENFADES VICTOR <3
+    // Función que usa los métodos de la API para obtner la imagen de un libro en específico para settearlo posteriormente a la imagen que se le pasa como argumento
 
     public static void cargarImagen(String bookPicture, ImageView portada) {
         ImageRepository imageRepository = new ImageRepository();
@@ -64,6 +64,8 @@ public class Helpers {
         });
     }
 
+    // Función que usa los métodos de la API para obtener la cantidad de libros disponibles y existentes de un libro en específico para settearlos posteriormente a los TextView que se le pasan como argumento
+
     public static void obtenerExistencias(Book book, TextView existencias, TextView disponibles, @Nullable Object[] lista) {
         BookRepository bookRepository = new BookRepository();
         bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
@@ -72,6 +74,7 @@ public class Helpers {
                 int existenciasTotal = 0;
                 int existenciasDisponibles = 0;
                 for (Book b : result) {
+                    // Si comparte el isbn se le suma 1 a las existencias totales y a las disponibles si está disponible, ya que pueden existir varios libros repetidos
                     if (Objects.equals(b.getIsbn(), book.getIsbn())) {
                         existenciasTotal++;
                         existenciasDisponibles += b.isAvailable() ? 1 : 0;
@@ -82,8 +85,6 @@ public class Helpers {
                 if (lista != null) {
                     cargarBotones(book, (Button) lista[0], (Button) lista[1], (int) lista[2], existenciasDisponibles);
                 }
-
-
             }
             @Override
             public void onFailure(Throwable t) {
@@ -94,9 +95,9 @@ public class Helpers {
         });
     }
 
+    // Función que controla los botones de LibroInformación para que se activen y descativen dependiendo de si el usuario posee el libro o no
+
     private static void cargarBotones(Book book, Button btnPrestar, Button btnDevolver, int userId, int existenciasDisponibles) {
-
-
 
         BookLendingRepository bookLendingRepository = new BookLendingRepository();
         bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
@@ -123,6 +124,8 @@ public class Helpers {
         });
     }
 
+    // Función que coge como argumento la lista de todos los libros para luego eliminar los libros que se repiten
+
     public static List<Book> getLibrosSinRepetir(List<Book> libros) {
         List<Book> librosSinRepetir = new ArrayList<>();
         for (Book libro : libros) {
@@ -140,6 +143,8 @@ public class Helpers {
         return librosSinRepetir;
     }
 
+    // Función que se encarga de dar libros aleatorios para mostrar en el menú principal
+
     public static List<Book> getLibrosRandom(List<Book> libros,int cantidad){
         List<Book> librosRandom = new ArrayList<>();
         for (int i = 0; i < cantidad; i++) {
@@ -149,6 +154,8 @@ public class Helpers {
         return librosRandom;
     }
 
+    // Función que se encarga de obtener la fecha de devolución del libro
+
     public static void getNextDevolucion(Book book, TextView tvProximoDisponible){
         StringBuilder mensaje = new StringBuilder();
         BookLendingRepository bookLendingRepository = new BookLendingRepository();
@@ -156,6 +163,7 @@ public class Helpers {
             @Override
             public void onSuccess(List<BookLending> result) {
                 String ultimaFecha = "";
+                // Se recorren todos los préstamos para encontrar el último préstamo del libro en cuestión
                 for (BookLending bookLending : result) {
                     if (bookLending.getBook().getIsbn().equals(book.getIsbn()) && bookLending.getReturnDate() == null) {
                         if (ultimaFecha.isEmpty()) {
@@ -167,10 +175,12 @@ public class Helpers {
                         }
                     }
                 }
+                // Si no se ha encontrado ninguna fecha de préstamo, se muestra un mensaje vacío
                 if (ultimaFecha.isEmpty()) {
                     tvProximoDisponible.setText("");
                     return;
                 }
+                // Una vez encontrada la fecha se le suman 15 días para calcular la fecha de devolución
                 String fechaDevolucion = sumarDias(ultimaFecha,15);
                 if(compararFechas(fechaDevolucion, String.valueOf(LocalDateTime.now()).substring(0,19)).equals(ultimaFecha)){
                     tvProximoDisponible.setTextColor(Color.RED);
@@ -186,6 +196,8 @@ public class Helpers {
         });
     }
 
+    // Función que compara dos fechas y devuelve la más reciente (usado en getNextDevolucion)
+
     private static String compararFechas(String lendDate, String ultimaFecha) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalDateTime date1 = LocalDateTime.parse(lendDate, formatter);
@@ -198,12 +210,16 @@ public class Helpers {
         }
     }
 
+    // Función que suma una cantidad de días a una fecha (usado en getNextDevolucion)
+
     private static String sumarDias(String dateString,int dias) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
         LocalDateTime newDateTime = dateTime.plusDays(dias);
         return newDateTime.format(formatter);
     }
+
+    // Función que se encarga de cargar la toolBar con todas sus opciones
 
     public static void cargarToolbar(AppCompatActivity context, Toolbar tb) {
         // Configura la barra de herramientas (Toolbar) en la actividad proporcionada
@@ -252,6 +268,8 @@ public class Helpers {
         });
     }
 
+    // Función que se encarga de escanear un código QR, es decir, abrir la cámara para leer un QR
+
     public static void scanearQR() {
         if (qrLauncher != null) {
             ScanOptions options = new ScanOptions();
@@ -266,18 +284,23 @@ public class Helpers {
         }
     }
 
+    // Función que se encarga de obtener la fecha de devolución del libro para un usuario en específico
+
     public static void getNextDevolucionUsuario(Book book, int userId, TextView txtFechaDevolucion) {
         StringBuilder mensaje = new StringBuilder();
         BookLendingRepository bookLendingRepository = new BookLendingRepository();
+        // Se usa el getAllLendings para recorrer la lista y comprobar si el usuario coincide
         bookLendingRepository.getAllLendings(new BookRepository.ApiCallback<List<BookLending>>() {
             @Override
             public void onSuccess(List<BookLending> result) {
                 String ultimaFecha = "";
                 for (BookLending bookLending : result) {
+                    // Cuando se encuentra una coincidencia de usuario y isbn del libro se settea la fecha de préstamo
                     if (bookLending.getBook().getIsbn().equals(book.getIsbn()) && bookLending.getReturnDate() == null && bookLending.getUserId() == userId) {
                         ultimaFecha = bookLending.getLendDate();
                     }
                 }
+                // Se le suman 15 días para calcular la fecha de devolución
                 String fechaDevolucion = sumarDias(ultimaFecha,15);
                 if(compararFechas(fechaDevolucion, String.valueOf(LocalDateTime.now()).substring(0,19)).equals(ultimaFecha)){
                     txtFechaDevolucion.setTextColor(Color.RED);
@@ -293,11 +316,20 @@ public class Helpers {
         });
     }
 
+    // Mini interfaz generada por nuestro compañero ChatGPT para que funcione la lógica de inicializarQRLauncher
+
     public interface QRCallback {
         void onResult(String scannedData);
     }
 
+    // Función que se encarga de inicializar el escaneo de un código QR y obtener el resultado del QR
+
+    // Se ha tenido que usar estos métodos porque por la lógica de los hilos, el hilo está en ejecución y cuando obtiene el valor del QR y se intenta devolver aún no ha cargado por eso es necesario usar este método
+
     public static void inicializarQRLauncher(AppCompatActivity context, String[] scannedResult, QRCallback callback) {
+
+        // La lógica de este método nos permite hacer acciones específicas para cuando devuelva el resultado como un listener (mirar en los métodos que se usa)
+
         qrLauncher = context.registerForActivityResult(new ScanContract(), result -> {
             if (result.getContents() != null) {
                 scannedResult[0] = result.getContents();
@@ -307,6 +339,7 @@ public class Helpers {
         });
     }
 
+    // Función que se encarga de pasar el ISBN escaneado a la vista de LibroInformación
 
     public static void isbnToView(AppCompatActivity context, String[] isbnEscaneado) {
         if (isbnEscaneado[0] == null || isbnEscaneado[0].isEmpty()) {
@@ -318,8 +351,12 @@ public class Helpers {
         context.startActivity(intent);
     }
 
+    // Función que se encarga de prestar un libro a partir del id del usuario y del libro
 
     public static void prestarLibro(int userId, int bookId) {
+
+        // Se ha tenido que modificar bookLendingRepository.lendBook porque tal y como estaba planteado no funcionaba y tras ver el código de mis compañeros me di cuenta de que no funcionaba y por eso decidí cambiarlo
+
         bookLendingRepository.lendBook(userId, bookId, new BookRepository.ApiCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
@@ -332,6 +369,8 @@ public class Helpers {
             }
         });
     }
+
+    // Función que se encarga de devolver un libro a partir del id del libro
 
     public static void devolverLibro(int bookId) {
         bookLendingRepository.returnBook(bookId, new BookRepository.ApiCallback<Boolean>() {
@@ -347,6 +386,8 @@ public class Helpers {
         });
     }
 
+    // Función que se encarga de obtener los libros de un usuario a partir de una lista de préstamos
+
     public static List<Book> getUserBooksFromLendings(List<BookLending> lendings, int userId) {
         List<Book> books = new ArrayList<>();
         for (BookLending lending : lendings) {
@@ -356,7 +397,4 @@ public class Helpers {
         }
         return books;
     }
-
-
-
 }
