@@ -45,7 +45,7 @@ public class LibrosUsuario extends AppCompatActivity {
         setContentView(R.layout.activity_libros_usuario);
 
         // Obtenemos el id del usuario mediante las shared preferences
-        userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
+        userId = Helpers.getUser(this);
 
         // Se inicializa el QRLauncher y se le mete toda la lógica para cuando se escanee un QR
         Helpers.inicializarQRLauncher(this, isbnEscaneado, result -> {

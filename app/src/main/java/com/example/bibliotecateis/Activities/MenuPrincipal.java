@@ -43,6 +43,7 @@ public class MenuPrincipal extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.menu_principal);
 
         recyclerMenu = findViewById(R.id.recyclerMenu);
@@ -52,7 +53,9 @@ public class MenuPrincipal extends AppCompatActivity {
         cargarBooks();
 
         // Obtenemos el userId y el bookId
+
         userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
+
         bookId = getIntent().getIntExtra(BOOK_ID_EXTRA, 0);
 
         // Se inicializa el QRLauncher y se le mete toda la lógica para cuando se escanee un QR

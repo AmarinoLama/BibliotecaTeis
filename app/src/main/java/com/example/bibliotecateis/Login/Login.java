@@ -17,6 +17,12 @@ import com.example.bibliotecateis.API.repository.UserRepository;
 import com.example.bibliotecateis.Activities.LibroInformacion;
 import com.example.bibliotecateis.Activities.MenuPrincipal;
 import com.example.bibliotecateis.R;
+
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 // Clase que se encarga de toda la gestión de la pantalla de inicio de sesión
@@ -77,10 +83,12 @@ public class Login extends AppCompatActivity {
 
                         // Una vez iniciada la sesión, se guarda el id del usuario en las preferencias compartidas
 
-                        SharedPreferences sp = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putInt(LibroInformacion.USER_ID, user.getId());
-                        editor.apply();
+//                        SharedPreferences sp = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE);
+//                        SharedPreferences.Editor editor = sp.edit();
+//                        editor.putInt(LibroInformacion.USER_ID, user.getId());
+//                        editor.apply();
+
+                        addToEncriptedSharePreferences(user);
 
                         // Sale un toast con el mensaje de sesión iniciada y carga el menú principal
 
@@ -101,5 +109,30 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(Login.this, "Error al buscar los usuarios", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    private void addToEncriptedSharePreferences(User user) {
+        try {
+            MasterKey mk = new MasterKey.Builder(this)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
+            SharedPreferences encryptedSp = EncryptedSharedPreferences.create(this, "ENCRYPTEDSHARE",
+                    mk,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+
+            SharedPreferences.Editor encryptedEditor = encryptedSp.edit();
+
+
+            encryptedEditor.putInt(LibroInformacion.USER_ID, user.getId());
+
+            encryptedEditor.apply();
+
+
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

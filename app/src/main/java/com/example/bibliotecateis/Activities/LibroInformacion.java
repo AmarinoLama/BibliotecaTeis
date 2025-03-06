@@ -1,23 +1,26 @@
 package com.example.bibliotecateis.Activities;
 
 import static com.example.bibliotecateis.Helpers.cargarToolbar;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.Helpers;
-import com.example.bibliotecateis.Login.Login;
 import com.example.bibliotecateis.R;
+
 import java.util.List;
 
 // Clase que muestra la información de un libro en particular
@@ -55,7 +58,7 @@ public class LibroInformacion extends AppCompatActivity {
         inicializar();
 
         // Obtenemos el ID del usuario y del libro mediante los shared preferences y el intent para pasar información entre clases
-        userId = getSharedPreferences(Login.SHARED_PREFERENCES, MODE_PRIVATE).getInt(USER_ID, 0);
+        userId = Helpers.getUser(this);
         bookId = getIntent().getIntExtra(BOOK_ID_EXTRA, 0);
 
         // Cargamos la información del libro a partir de la id de este
@@ -160,7 +163,7 @@ public class LibroInformacion extends AppCompatActivity {
 
                 // Cargamos las existencias y disponibilidad
                 Helpers.getNextDevolucion(result, tvProximoDisponible);
-                Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles, new Object[]{btnPrestar,btnDevolver,userId});
+                Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles, new Object[]{btnPrestar, btnDevolver, userId});
 
                 // El método de obtenerExistencias se encarga de cargar la información de los libros existentes y disponibles y de habilitar o deshabilitar los botones de prestar y devolver, se han juntado estas acciones en el mismo método, ya que la información de los libros disponibles o no se necesita para cargar los botones
             }

@@ -44,5 +44,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.zxing.android.embedded)
+    implementation(libs.security.crypto)
 
 }
