@@ -12,21 +12,18 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bibliotecateis.API.models.Book;
-import com.example.bibliotecateis.API.models.BookLending;
-import com.example.bibliotecateis.API.repository.BookLendingRepository;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.Helpers;
 import com.example.bibliotecateis.Login.Login;
 import com.example.bibliotecateis.R;
+import com.example.bibliotecateis.viewModels.BookViewModel;
+import com.example.bibliotecateis.viewModels.BooksViewModel;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 public class LibroInformacion extends AppCompatActivity {
 
@@ -43,17 +40,13 @@ public class LibroInformacion extends AppCompatActivity {
     public int userId = 0;
     public int bookId = 0;
 
+    private BookViewModel bookViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_libro_informacion);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         inicializar();
 
@@ -92,29 +85,48 @@ public class LibroInformacion extends AppCompatActivity {
             });
         });
 
+        setOCL();
+
+        cargarToolbar(this, tb);
+
+        //cargarBotones();
+
+    }
+
+    private void setOCL() {
         // Listeners de botones:
         btnPrestar.setOnClickListener(v -> {
             Helpers.prestarLibro(userId, bookId);
-            Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
-            i.putExtra(BOOK_ID_EXTRA, bookId);
-            startActivity(i);
+            cargarInfoLibro(bookId);
         });
 
         btnDevolver.setOnClickListener(v -> {
             Helpers.devolverLibro(bookId);
-            Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
-            i.putExtra(BOOK_ID_EXTRA, bookId);
-            startActivity(i);
+            cargarInfoLibro(bookId);
         });
 
         btnVolver.setOnClickListener(v -> {
             Intent i = new Intent(LibroInformacion.this, ListadoLibros.class);
             startActivity(i);
         });
+    }
 
-        cargarToolbar(this, tb);
+    private void cargarVM(Book book) {
 
-        //cargarBotones();
+        bookViewModel = new ViewModelProvider(this).get(BookViewModel.class);
+        bookViewModel.getBook().observe(this, new Observer<Book>() {
+            @Override
+            public void onChanged(Book book) {
+                // Update the UI directly instead of calling cargarInfoLibro
+                if (book != null) {
+                    cargarLibro(book);
+                }
+            }
+        });
+
+
+        bookViewModel.setBook(book);
+
     }
 
     private void inicializar() {
@@ -140,18 +152,8 @@ public class LibroInformacion extends AppCompatActivity {
                     Toast.makeText(LibroInformacion.this, "El repositorio devolvió null para el ID: " + id, Toast.LENGTH_LONG).show();
                     return;
                 }
-                // Actualizamos la información en pantalla
-                tvTitulo.setText(result.getTitle());
-                tvIsbn.setText(result.getIsbn());
-                tvAutor.setText(result.getAuthor());
 
-                if (!result.getBookPicture().isEmpty()) {
-                    Helpers.cargarImagen(result.getBookPicture(), ivPortada);
-                }
-
-                // Cargamos las existencias y disponibilidad
-                Helpers.getNextDevolucion(result, tvProximoDisponible);
-                Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles, new Object[]{btnPrestar,btnDevolver,userId});
+                cargarVM(result);
 
 
 
@@ -166,5 +168,22 @@ public class LibroInformacion extends AppCompatActivity {
             }
         });
     }
+
+    private void cargarLibro(Book result) {
+        // Actualizamos la información en pantalla
+        tvTitulo.setText(result.getTitle());
+        tvIsbn.setText(result.getIsbn());
+        tvAutor.setText(result.getAuthor());
+
+        if (result.getBookPicture() == null || !result.getBookPicture().isEmpty()) {
+            Helpers.cargarImagen(result.getBookPicture(), ivPortada);
+        }
+
+        // Cargamos las existencias y disponibilidad
+        Helpers.getNextDevolucion(result, tvProximoDisponible);
+        Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles, new Object[]{btnPrestar,btnDevolver,userId});
+    }
+
+
 }
 
