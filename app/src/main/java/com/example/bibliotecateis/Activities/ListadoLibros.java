@@ -1,6 +1,7 @@
 package com.example.bibliotecateis.Activities;
 
 import static com.example.bibliotecateis.Helpers.cargarToolbar;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,29 +12,35 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.Helpers;
 import com.example.bibliotecateis.R;
+import com.example.bibliotecateis.viewModels.BooksViewModel;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListadoLibros extends AppCompatActivity {
 
-    // Variable extraída para que no se repita tanto código
-    private BookRepository bookRepository = new BookRepository();
-
-    // Otras variables del xml para poder trabajar con ellas
+    private BookRepository bookRepository;
     private RecyclerView recyclerViewLibros;
     private Button btnBuscarAutor, btnBuscarTitulo,btnEliminarFiltro;
     private EditText etBuscar;
     private Toolbar tb;
+    private BooksViewModel booksViewModel;
+    private BookAdapter adapter;
 
-    // Variable donde se guarda el isbnEscaneado al leer el QR
+    // ADICIÓN: un arreglo para almacenar el ISBN escaneado
     private String[] isbnEscaneado = new String[]{""};
 
     @Override
@@ -41,53 +48,15 @@ public class ListadoLibros extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listado_biblioteca);
 
-        // Inicializamos las variables con sus ids
-        btnBuscarAutor   = findViewById(R.id.btnFiltrarAutor);
-        btnBuscarTitulo  = findViewById(R.id.btnFiltrarTitulo);
-        etBuscar         = findViewById(R.id.etBuscar);
-        recyclerViewLibros = findViewById(R.id.recyclerViewLibros);
-        recyclerViewLibros.setLayoutManager(new LinearLayoutManager(this));
-        btnEliminarFiltro = findViewById(R.id.btnEliminarFiltro);
-        tb = findViewById(R.id.toolbar);
+        findIds();
 
         // Llamamos para cargar los libros inicialmente
         cargarBooks();
 
-        // Escuchador del botón de búsqueda por Autor
-        btnBuscarAutor.setOnClickListener((view) -> {
-            bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
-                @Override
-                public void onSuccess(List<Book> result) {
-                    buscarAutor(etBuscar.getText().toString(), result);
-                }
-                @Override
-                public void onFailure(Throwable t) {
-                    Toast.makeText(ListadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
+        setOCL();
 
-        // Escuchador del botón de búsqueda por Título
-        btnBuscarTitulo.setOnClickListener((view) -> {
-            bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
-                @Override
-                public void onSuccess(List<Book> result) {
-                    buscarTitulo(etBuscar.getText().toString(), result);
-                }
-                @Override
-                public void onFailure(Throwable t) {
-                    Toast.makeText(ListadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
 
-        // Escuchador del botón de eliminar filtro
-        btnEliminarFiltro.setOnClickListener((view) -> {
-            cargarBooks();
-            etBuscar.setText("");
-        });
-
-        // Se inicializa el QRLauncher y se le mete toda la lógica para cuando se escanee un QR
+        // ADICIÓN: REGISTRAR el Launcher ANTES de cargar la toolbar
         Helpers.inicializarQRLauncher(this, isbnEscaneado, result -> {
             // Este callback se llama cuando el escaneo finaliza
             isbnEscaneado[0] = result;
@@ -122,90 +91,82 @@ public class ListadoLibros extends AppCompatActivity {
             });
         });
 
+    }
+
+    private void setOCL() {
+        // Escuchadores de los botones de búsqueda
+        btnBuscarAutor.setOnClickListener((view) -> {
+            bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
+                @Override
+                public void onSuccess(List<Book> result) {
+                    buscarAutor(etBuscar.getText().toString(), result);
+                }
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(ListadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        btnBuscarTitulo.setOnClickListener((view) -> {
+            bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
+                @Override
+                public void onSuccess(List<Book> result) {
+                    buscarTitulo(etBuscar.getText().toString(), result);
+                }
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(ListadoLibros.this, "Error al buscar los libros", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        btnEliminarFiltro.setOnClickListener((view) -> {
+            cargarBooks();
+            etBuscar.setText("");
+        });
+    }
+
+    private void findIds() {
+        btnBuscarAutor   = findViewById(R.id.btnFiltrarAutor);
+        btnBuscarTitulo  = findViewById(R.id.btnFiltrarTitulo);
+        etBuscar         = findViewById(R.id.etBuscar);
+        recyclerViewLibros = findViewById(R.id.recyclerViewLibros);
+        recyclerViewLibros.setLayoutManager(new LinearLayoutManager(this));
+        btnEliminarFiltro = findViewById(R.id.btnEliminarFiltro);
+        tb = findViewById(R.id.toolbar);
         // Finalmente cargamos la toolbar
         cargarToolbar(this, tb);
     }
 
-    // Método que carga el adapter con todos los libros existentes en la biblioteca
-
-    private void cargarAdapter(List<Book> booksSinFiltrar) {
-
-        // Se borran los libros repetidos
+    private void cargarVM(List<Book> booksSinFiltrar) {
         List<Book> books = Helpers.getLibrosSinRepetir(booksSinFiltrar);
 
-        // Se settea el adapter con el fragment
-        recyclerViewLibros.setAdapter(new RecyclerView.Adapter() {
-            class MyViewHolder extends RecyclerView.ViewHolder {
 
-                // Variables que se necesitan para el fragment
-                ImageView img1;
-                TextView txt1, txt2, txt_disponibles, txt_existencias;
-                Button btn1;
 
-                // Constructor del fragment donde se inicializan las variables
-                public MyViewHolder(@NonNull View itemView) {
-                    super(itemView);
-                    btn1  = itemView.findViewById(R.id.btn1);
-                    img1  = itemView.findViewById(R.id.img1);
-                    txt1  = itemView.findViewById(R.id.txt1);
-                    txt2  = itemView.findViewById(R.id.txt2);
-                    txt_disponibles = itemView.findViewById(R.id.txt_disponibles);
-                    txt_existencias = itemView.findViewById(R.id.txt_existencias);
-                }
-            }
 
-            // Función que crea el fragment
-            @NonNull
+        booksViewModel = new ViewModelProvider(this).get(BooksViewModel.class);
+        adapter = new BookAdapter();
+        recyclerViewLibros.setAdapter(adapter);
+        booksViewModel.getBooks().observe(this, new Observer<List<Book>>() {
             @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.fragment_tarjeta_book, parent, false);
-                return new MyViewHolder(view);
-            }
-
-            // Función que se encarga de llenar el fragment con los datos de los libros
-            @Override
-            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-                MyViewHolder myvh = (MyViewHolder) holder;
-                Book book = books.get(position);
-
-                // Título y autor
-                myvh.txt1.setText(book.getTitle());
-                myvh.txt2.setText(book.getAuthor());
-
-                // Existencias
-                Helpers.obtenerExistencias(book, myvh.txt_existencias, myvh.txt_disponibles,null);
-
-                // Botón que abre la info detallada
-                myvh.btn1.setOnClickListener((view) -> {
-                    Intent intent = new Intent(ListadoLibros.this, LibroInformacion.class);
-                    intent.putExtra(LibroInformacion.BOOK_ID_EXTRA, book.getId());
-                    startActivity(intent);
-                });
-
-                // Imagen del libro
-                String urlImagen = book.getBookPicture();
-                if (urlImagen != null && !urlImagen.isEmpty()) {
-                    Helpers.cargarImagen(urlImagen, myvh.img1);
-                } else {
-                    myvh.img1.setImageResource(R.drawable.portada_libro_default);
-                }
-            }
-
-            @Override
-            public int getItemCount() {
-                return books.size();
+            public void onChanged(List<Book> books) {
+                adapter.setBooks(books);
             }
         });
+
+
+        booksViewModel.setBooks(books);
+
     }
 
-    // Método que carga los libros de la biblioteca (todos los existentes sin revisar que se repitan)
-
     public void cargarBooks() {
+        bookRepository = new BookRepository();
+
         bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
             @Override
             public void onSuccess(List<Book> result) {
-                cargarAdapter(result);
+                cargarVM(result);
             }
 
             @Override
@@ -215,23 +176,85 @@ public class ListadoLibros extends AppCompatActivity {
         });
     }
 
-    // Método que busca los libros por autor
     public void buscarAutor(String autor, List<Book> books) {
-        cargarAdapter(books.stream()
-                .filter(book -> book.getAuthor().toLowerCase().contains(autor.toLowerCase())) // Funciona con búsqueda parcial gracias al contains
+        cargarVM(books.stream()
+                .filter(book -> book.getAuthor().toLowerCase().contains(autor.toLowerCase()))
                 .toList());
     }
 
-    // Método que busca los libros por título
     public void buscarTitulo(String titulo, List<Book> books){
-        cargarAdapter(books.stream()
-                .filter(book -> book.getTitle().toLowerCase().contains(titulo.toLowerCase())) // Funciona con búsqueda parcial gracias al contains
+        cargarVM(books.stream()
+                .filter(book -> book.getTitle().toLowerCase().contains(titulo.toLowerCase()))
                 .toList());
     }
 
-    // Método que busca los libros prestados
-    // Sin uso pero no se borra por si se necesita en un futuro
     public void buscarPrestado(List<Book> books){
-        cargarAdapter(books.stream().filter(book -> !book.isAvailable()).toList());
+        cargarVM(books.stream().filter(book -> !book.isAvailable()).toList());
+    }
+
+    private class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder> {
+        private List<Book> books = new ArrayList<>();
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+            ImageView img1;
+            TextView txt1, txt2, txt_disponibles, txt_existencias;
+            Button btn1;
+
+            public MyViewHolder(@NonNull View itemView) {
+                super(itemView);
+                btn1  = itemView.findViewById(R.id.btn1);
+                img1  = itemView.findViewById(R.id.img1);
+                txt1  = itemView.findViewById(R.id.txt1);
+                txt2  = itemView.findViewById(R.id.txt2);
+                txt_disponibles = itemView.findViewById(R.id.txt_disponibles);
+                txt_existencias = itemView.findViewById(R.id.txt_existencias);
+            }
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.fragment_tarjeta_book, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+            MyViewHolder myvh = (MyViewHolder) holder;
+            Book book = books.get(position);
+
+            // Título y autor
+            myvh.txt1.setText(book.getTitle());
+            myvh.txt2.setText(book.getAuthor());
+
+            // Existencias
+            Helpers.obtenerExistencias(book, myvh.txt_existencias, myvh.txt_disponibles,null);
+
+            // Botón que abre la info detallada
+            myvh.btn1.setOnClickListener((view) -> {
+                Intent intent = new Intent(ListadoLibros.this, LibroInformacion.class);
+                intent.putExtra(LibroInformacion.BOOK_ID_EXTRA, book.getId());
+                startActivity(intent);
+            });
+
+            // Imagen del libro
+            String urlImagen = book.getBookPicture();
+            if (urlImagen != null && !urlImagen.isEmpty()) {
+                Helpers.cargarImagen(urlImagen, myvh.img1);
+            } else {
+                myvh.img1.setImageResource(R.drawable.portada_libro_default);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return books.size();
+        }
+
+        void setBooks(List<Book> newBooks) {
+            this.books = newBooks;
+            notifyDataSetChanged();
+        }
     }
 }

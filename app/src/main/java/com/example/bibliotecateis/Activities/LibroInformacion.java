@@ -12,14 +12,15 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bibliotecateis.API.models.Book;
 import com.example.bibliotecateis.API.repository.BookRepository;
 import com.example.bibliotecateis.Helpers;
 import com.example.bibliotecateis.R;
+import com.example.bibliotecateis.viewModels.BookViewModel;
+import com.example.bibliotecateis.viewModels.BooksViewModel;
 
 import java.util.List;
 
@@ -43,17 +44,13 @@ public class LibroInformacion extends AppCompatActivity {
     public int userId = 0;
     public int bookId = 0;
 
+    private BookViewModel bookViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_libro_informacion);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         inicializar();
 
@@ -98,20 +95,26 @@ public class LibroInformacion extends AppCompatActivity {
             });
         });
 
+        setOCL();
+
+        cargarToolbar(this, tb);
+
+        //cargarBotones();
+
+    }
+
+    private void setOCL() {
+        // Listeners de botones:
         // Listener del botón prestar que llama al método prestarLibro de la clase Helpers y recarga la página para actualizar los valores
         btnPrestar.setOnClickListener(v -> {
             Helpers.prestarLibro(userId, bookId);
-            Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
-            i.putExtra(BOOK_ID_EXTRA, bookId);
-            startActivity(i);
+            cargarInfoLibro(bookId);
         });
 
         // Listener del botón devolver que llama al método devolverLibro de la clase Helpers y recarga la página para actualizar los valores
         btnDevolver.setOnClickListener(v -> {
             Helpers.devolverLibro(bookId);
-            Intent i = new Intent(LibroInformacion.this, LibroInformacion.class);
-            i.putExtra(BOOK_ID_EXTRA, bookId);
-            startActivity(i);
+            cargarInfoLibro(bookId);
         });
 
         // Listener del botón volver que nos lleva a la pantalla de listado de libros
@@ -119,6 +122,23 @@ public class LibroInformacion extends AppCompatActivity {
             Intent i = new Intent(LibroInformacion.this, ListadoLibros.class);
             startActivity(i);
         });
+    }
+
+    private void cargarVM(Book book) {
+
+        bookViewModel = new ViewModelProvider(this).get(BookViewModel.class);
+        bookViewModel.getBook().observe(this, new Observer<Book>() {
+            @Override
+            public void onChanged(Book book) {
+                // Update the UI directly instead of calling cargarInfoLibro
+                if (book != null) {
+                    cargarLibro(book);
+                }
+            }
+        });
+
+
+        bookViewModel.setBook(book);
 
         // Cargamos el toolbar
         cargarToolbar(this, tb);
@@ -151,21 +171,12 @@ public class LibroInformacion extends AppCompatActivity {
                     Toast.makeText(LibroInformacion.this, "El repositorio devolvió null para el ID: " + id, Toast.LENGTH_LONG).show();
                     return;
                 }
-                // Actualizamos la información en pantalla
-                tvTitulo.setText(result.getTitle());
-                tvIsbn.setText(result.getIsbn());
-                tvAutor.setText(result.getAuthor());
 
-                // Cargamos la imagen de la portada en el caso de que no se encuentre vacía
-                if (!result.getBookPicture().isEmpty()) {
-                    Helpers.cargarImagen(result.getBookPicture(), ivPortada);
-                }
+                cargarVM(result);
 
-                // Cargamos las existencias y disponibilidad
-                Helpers.getNextDevolucion(result, tvProximoDisponible);
-                Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles, new Object[]{btnPrestar, btnDevolver, userId});
 
-                // El método de obtenerExistencias se encarga de cargar la información de los libros existentes y disponibles y de habilitar o deshabilitar los botones de prestar y devolver, se han juntado estas acciones en el mismo método, ya que la información de los libros disponibles o no se necesita para cargar los botones
+
+                // Ajustamos visibilidad de botones (Prestar/Devolver) según estado
             }
 
             @Override
@@ -176,4 +187,21 @@ public class LibroInformacion extends AppCompatActivity {
             }
         });
     }
+
+    private void cargarLibro(Book result) {
+        // Actualizamos la información en pantalla
+        tvTitulo.setText(result.getTitle());
+        tvIsbn.setText(result.getIsbn());
+        tvAutor.setText(result.getAuthor());
+
+        if (result.getBookPicture() == null || !result.getBookPicture().isEmpty()) {
+            Helpers.cargarImagen(result.getBookPicture(), ivPortada);
+        }
+
+        // Cargamos las existencias y disponibilidad
+        Helpers.getNextDevolucion(result, tvProximoDisponible);
+        Helpers.obtenerExistencias(result, tvLibrosExistentes, tvLibrosDisponibles, new Object[]{btnPrestar,btnDevolver,userId});
+    }
+
+
 }
